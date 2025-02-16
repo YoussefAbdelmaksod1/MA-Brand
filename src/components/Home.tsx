@@ -1,8 +1,8 @@
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import FloatingLogo from '../components/FloatingLogo';
-import CoachProfile from '../components/CoachProfile';
-import FitnessScene from '../components/FitnessScene';
+import FloatingLogo from '@/components/FloatingLogo';
+import CoachProfile from '@/components/CoachProfile';
+import FitnessScene from '@/components/FitnessScene';
 import {
   fadeInUp,
   fadeInDown,

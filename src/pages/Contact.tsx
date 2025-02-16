@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import PageTransition from '../components/PageTransition';
-import Card from '../components/Card';
-import Button from '../components/Button';
+import PageTransition from '@/components/PageTransition';
+import Card from '@/components/Card';
+import Button from '@/components/Button';
 
 interface FormData {
   name: string;
