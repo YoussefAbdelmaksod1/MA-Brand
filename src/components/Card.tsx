@@ -8,6 +8,7 @@ interface CardProps {
   glowing?: boolean;
   interactive?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  onClick?: () => void;
 }
 
 const Card = ({
@@ -17,6 +18,7 @@ const Card = ({
   glowing = false,
   interactive = false,
   size = 'md',
+  onClick,
 }: CardProps) => {
   const baseStyles = `
     bg-black/80 border border-game-blue rounded-lg
@@ -47,6 +49,7 @@ const Card = ({
       <motion.div
         whileHover={{ scale: 1.02, y: -5 }}
         className={`${baseStyles} ${sizeStyles[size]} ${glowStyles} ${className} cursor-pointer`}
+        onClick={onClick}
       >
         {cardContent}
       </motion.div>
@@ -54,7 +57,10 @@ const Card = ({
   }
 
   return (
-    <div className={`${baseStyles} ${sizeStyles[size]} ${glowStyles} ${className}`}>
+    <div 
+      className={`${baseStyles} ${sizeStyles[size]} ${glowStyles} ${className}`}
+      onClick={onClick}
+    >
       {cardContent}
     </div>
   );

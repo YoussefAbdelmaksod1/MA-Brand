@@ -1,7 +1,7 @@
-import { Suspense, useRef } from 'react';
+import { Suspense, useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Float, Text, Center, useHelper } from '@react-three/drei';
-import { SpotLightHelper, DirectionalLightHelper } from 'three';
+import { motion } from 'framer-motion';
 
 // Gym Equipment Components
 const Dumbbell = ({ position = [0, 0, 0], rotation = [0, 0, 0], color = "#00A3FF" }: { 
@@ -272,49 +272,156 @@ const LevelUpText = () => {
 };
 
 const FitnessScene = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const particles = useRef<Array<{
+    x: number;
+    y: number;
+    size: number;
+    speedX: number;
+    speedY: number;
+    opacity: number;
+  }>>([]);
+  const mousePosition = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Handle window resize
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    // Track mouse movement
+    const handleMouseMove = (e: MouseEvent) => {
+      mousePosition.current = {
+        x: e.clientX,
+        y: e.clientY,
+      };
+    };
+
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('mousemove', handleMouseMove);
+    handleResize();
+
+    // Initialize particles
+    const particleCount = 150;
+    for (let i = 0; i < particleCount; i++) {
+      particles.current.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 2 + 1,
+        speedX: (Math.random() - 0.5) * 0.5,
+        speedY: (Math.random() - 0.5) * 0.5,
+        opacity: Math.random() * 0.5 + 0.2,
+      });
+    }
+
+    // Animation loop
+    const animate = () => {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      particles.current.forEach((particle, index) => {
+        // Update particle position
+        particle.x += particle.speedX;
+        particle.y += particle.speedY;
+
+        // Wrap around screen
+        if (particle.x > canvas.width) particle.x = 0;
+        if (particle.x < 0) particle.x = canvas.width;
+        if (particle.y > canvas.height) particle.y = 0;
+        if (particle.y < 0) particle.y = canvas.height;
+
+        // Interactive effect with mouse
+        const dx = mousePosition.current.x - particle.x;
+        const dy = mousePosition.current.y - particle.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const maxDistance = 150;
+
+        if (distance < maxDistance) {
+          const angle = Math.atan2(dy, dx);
+          const force = (maxDistance - distance) / maxDistance;
+          particle.x -= Math.cos(angle) * force * 2;
+          particle.y -= Math.sin(angle) * force * 2;
+          particle.opacity = Math.min(0.8, particle.opacity + 0.1);
+        }
+
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 163, 255, ${particle.opacity})`;
+        ctx.fill();
+
+        // Draw connections
+        particles.current.forEach((otherParticle, otherIndex) => {
+          if (index === otherIndex) return;
+          
+          const dx = particle.x - otherParticle.x;
+          const dy = particle.y - otherParticle.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < 100) {
+            ctx.beginPath();
+            ctx.moveTo(particle.x, particle.y);
+            ctx.lineTo(otherParticle.x, otherParticle.y);
+            ctx.strokeStyle = `rgba(0, 163, 255, ${0.15 * (1 - distance / 100)})`;
+            ctx.stroke();
+          }
+        });
+      });
+
+      requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
   return (
-    <div className="absolute inset-0 z-0 bg-black">
-      <Canvas
-        camera={{ position: [0, 2, 15], fov: 60 }}
-        gl={{ antialias: true }}
-        shadows
-      >
-        <Suspense fallback={null}>
-          <Lights />
-          
-          {/* Equipment Layout */}
-          {/* Front Row */}
-          <Dumbbell position={[-4, 0, 2]} rotation={[0, Math.PI / 4, 0]} color="#FF0000" />
-          <Dumbbell position={[4, 0, 2]} rotation={[0, -Math.PI / 4, 0]} color="#00A3FF" />
-          
-          {/* Middle Row */}
-          <BenchPress position={[0, -1, 0]} />
-          <WeightRack position={[-6, 0, -2]} />
-          <WeightRack position={[6, 0, -2]} />
-          
-          {/* Back Row */}
-          <TreadmillMachine position={[-4, 0, -6]} />
-          <PunchingBag position={[4, 2, -4]} />
-          
-          {/* Floor */}
-          <YogaMat position={[-2, 0.01, 4]} color="#FF69B4" />
-          <YogaMat position={[2, 0.01, 4]} color="#00A3FF" />
-          
-          {/* Text */}
-          <LevelUpText />
-          
-          {/* Controls */}
-          <OrbitControls
-            enableZoom={false}
-            enablePan={false}
-            enableRotate={true}
-            autoRotate
-            autoRotateSpeed={0.5}
-            maxPolarAngle={Math.PI / 2}
-            minPolarAngle={Math.PI / 4}
-          />
-        </Suspense>
-      </Canvas>
+    <div className="absolute inset-0 z-0 bg-gradient-to-b from-black to-game-black/95 overflow-hidden">
+      <motion.canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      />
+      <div className="absolute inset-0 bg-gradient-radial from-transparent via-black/50 to-black pointer-events-none" />
+      
+      {/* Glowing orbs */}
+      <motion.div
+        className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full bg-game-blue/20 blur-xl"
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.5, 0.3],
+        }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+      <motion.div
+        className="absolute bottom-1/4 right-1/4 w-40 h-40 rounded-full bg-game-red/20 blur-xl"
+        animate={{
+          scale: [1.2, 1, 1.2],
+          opacity: [0.5, 0.3, 0.5],
+        }}
+        transition={{
+          duration: 5,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
     </div>
   );
 };

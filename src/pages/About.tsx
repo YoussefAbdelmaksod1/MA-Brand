@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import PageTransition from '../components/PageTransition';
 import Card from '../components/Card';

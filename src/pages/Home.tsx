@@ -1,9 +1,22 @@
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import FloatingLogo from '../components/FloatingLogo';
 import CoachProfile from '../components/CoachProfile';
 import FitnessScene from '../components/FitnessScene';
-import { fadeInUp, fadeInDown, staggerContainer, neonPulse, floatingAnimation, bounceIn, powerUpAnimation, progressBarFill, gameCardHover, levelUpFlash, shakeAnimation, pixelateIn } from '../hooks/useAnimations';
+import {
+  fadeInUp,
+  fadeInDown,
+  staggerContainer,
+  neonPulse,
+  floatingAnimation,
+  powerUpAnimation,
+  levelUpFlash,
+  pixelateIn,
+  gameCardHover,
+  progressBarFill,
+  bounceIn,
+  shakeAnimation
+} from '../hooks/useAnimations';
 
 const StatCounter = ({ value, label, icon }: { value: number; label: string; icon: string }) => {
   const [count, setCount] = useState(0);
