@@ -16,9 +16,11 @@
     "@mui/material": "^5.15.10",
     "@react-three/drei": "^9.121.5",
     "@react-three/fiber": "^8.17.14",
+    "@emailjs/browser": "^4.1.0",
     "framer-motion": "^11.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^5.0.1",
     "react-router-dom": "^6.22.1",
     "three": "^0.161.0"
   },

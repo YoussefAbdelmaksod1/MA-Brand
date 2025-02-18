@@ -17,6 +17,7 @@ import {
   bounceIn,
   shakeAnimation
 } from '../hooks/useAnimations';
+import { useNavigate } from 'react-router-dom';
 
 const StatCounter = ({ value, label, icon }: { value: number; label: string; icon: string }) => {
   const [count, setCount] = useState(0);
@@ -104,13 +105,16 @@ const FeatureCard = ({ title, description, icon }: { title: string; description:
 
 const Home = () => {
   const { scrollYProgress } = useScroll();
+  const navigate = useNavigate();
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8]);
 
   return (
-    <div className="relative min-h-screen bg-game-black">
-      {/* Background Scene */}
+    <div className="relative min-h-screen bg-gradient-to-b from-black via-game-black to-black">
+      {/* Background Scene with enhanced effects */}
       <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,163,255,0.1)_0%,transparent_70%)] opacity-50" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,0,0,0.1)_0%,transparent_100%)] opacity-30" />
         <FitnessScene />
       </div>
       
@@ -123,42 +127,43 @@ const Home = () => {
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-32"
         >
           {/* Hero Section */}
-          <div className="min-h-screen flex items-center justify-center">
+          <div className="min-h-[90vh] flex flex-col justify-center items-center relative">
             <motion.div
               style={{ opacity, scale }}
-              className="text-center max-w-4xl px-4 sm:px-6"
+              className="text-center max-w-5xl mx-auto relative z-10 px-4 sm:px-6 -mt-48"
             >
               <motion.div
                 variants={floatingAnimation}
                 initial="initial"
                 animate="animate"
-                className="mb-8 sm:mb-12 w-32 h-32 sm:w-48 sm:h-48 mx-auto"
+                className="mb-6 sm:mb-8 w-32 h-32 sm:w-48 sm:h-48 mx-auto"
               >
                 <FloatingLogo />
               </motion.div>
 
               <motion.h1
                 variants={fadeInDown}
-                className="text-4xl sm:text-6xl md:text-8xl font-gaming font-bold mb-6 sm:mb-8"
+                className="text-4xl sm:text-6xl md:text-7xl font-gaming font-bold mb-4 sm:mb-6 leading-tight tracking-wider"
               >
                 <motion.span
                   variants={pixelateIn}
-                  className="text-game-white"
+                  className="text-game-white text-glow inline-block transform hover:scale-105 transition-transform duration-300"
                 >
                   Enter
+                </motion.span>{' '}
+                <motion.span
+                  variants={neonPulse}
+                  initial="initial"
+                  animate="animate"
+                  className="text-game-blue text-glow inline-block transform hover:scale-105 transition-transform duration-300"
+                >
+                  the Game
                 </motion.span>
                 <motion.span
                   variants={neonPulse}
                   initial="initial"
                   animate="animate"
-                  className="text-game-blue"
-                > the Game
-                </motion.span>
-                <motion.span
-                  variants={neonPulse}
-                  initial="initial"
-                  animate="animate"
-                  className="block text-game-red mt-2 sm:mt-4"
+                  className="block text-game-red text-glow-red mt-3 sm:mt-4 transform hover:scale-105 transition-transform duration-300"
                 >
                   Level Up Your Life
                 </motion.span>
@@ -166,19 +171,31 @@ const Home = () => {
 
               <motion.p
                 variants={fadeInUp}
-                className="text-lg sm:text-xl md:text-3xl mb-8 sm:mb-12 text-game-white/90 font-gaming px-4"
+                className="text-lg sm:text-xl md:text-3xl mb-8 sm:mb-12 text-game-white/90 font-gaming tracking-wide text-glow max-w-3xl mx-auto px-4"
               >
                 Join the ultimate fusion of gaming and fitness with Coach Moumen Atef
               </motion.p>
 
               <motion.div
                 variants={fadeInUp}
-                className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 px-4"
+                className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 px-4 sm:px-0"
               >
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ 
+                    scale: 1.05,
+                    boxShadow: [
+                      '0 0 20px rgba(255,0,0,0.5)',
+                      '0 0 30px rgba(255,0,0,0.3)',
+                      '0 0 40px rgba(255,0,0,0.1)'
+                    ]
+                  }}
                   whileTap={{ scale: 0.95 }}
-                  className="neon-button bg-game-red text-lg sm:text-xl px-6 sm:px-8 py-3 sm:py-4 rounded-lg w-full sm:w-64 relative overflow-hidden group"
+                  onClick={() => window.open('https://wa.me/201277877499', '_blank')}
+                  className="relative group bg-gradient-to-r from-game-red to-game-red/80 
+                    text-xl sm:text-2xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg w-full sm:w-auto 
+                    min-w-[200px] font-gaming text-white border-2 border-game-red/50 
+                    hover:border-game-red transition-all duration-300 overflow-hidden
+                    shadow-[0_0_20px_rgba(255,0,0,0.3)]"
                 >
                   <motion.span
                     variants={shakeAnimation}
@@ -193,10 +210,23 @@ const Home = () => {
                     animate="animate"
                   />
                 </motion.button>
+
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ 
+                    scale: 1.05,
+                    boxShadow: [
+                      '0 0 20px rgba(0,163,255,0.5)',
+                      '0 0 30px rgba(0,163,255,0.3)',
+                      '0 0 40px rgba(0,163,255,0.1)'
+                    ]
+                  }}
                   whileTap={{ scale: 0.95 }}
-                  className="neon-button bg-game-blue text-lg sm:text-xl px-6 sm:px-8 py-3 sm:py-4 rounded-lg w-full sm:w-64 relative overflow-hidden group"
+                  onClick={() => navigate('/services')}
+                  className="relative group bg-gradient-to-r from-game-blue to-game-blue/80 
+                    text-xl sm:text-2xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg w-full sm:w-auto 
+                    min-w-[200px] font-gaming text-white border-2 border-game-blue/50 
+                    hover:border-game-blue transition-all duration-300 overflow-hidden
+                    shadow-[0_0_20px_rgba(0,163,255,0.3)]"
                 >
                   <motion.span
                     variants={shakeAnimation}
@@ -226,14 +256,248 @@ const Home = () => {
           {/* Stats Section */}
           <motion.section
             variants={fadeInUp}
-            className="py-16 sm:py-24"
+            className="py-16 sm:py-24 relative"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-              <StatCounter value={1000} label="Active Players" icon="👥" />
-              <StatCounter value={50000} label="Workouts Completed" icon="💪" />
-              <StatCounter value={95} label="Success Rate" icon="⭐" />
-              <StatCounter value={500} label="Transformations" icon="🎯" />
+            <div className="absolute inset-0">
+              <div className="bg-[radial-gradient(ellipse_at_top,rgba(0,163,255,0.15),transparent_50%)]" />
+              <div className="bg-[radial-gradient(ellipse_at_bottom,rgba(255,0,0,0.15),transparent_50%)]" />
             </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              className="relative"
+            >
+              <motion.div 
+                className="text-center mb-12"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
+              >
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-gaming mb-4">
+                  Achievement <span className="text-game-red">Unlocked</span>
+                </h2>
+                <div className="flex justify-center items-center gap-2 text-xl font-gaming text-game-white/80">
+                  <span className="text-2xl">🎮</span>
+                  <span>Level Up Your Fitness Journey</span>
+                  <span className="text-2xl">💪</span>
+                </div>
+              </motion.div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+                <StatCounter 
+                  value={1500} 
+                  label="Total XP Gained" 
+                  icon="⚡" 
+                />
+                <StatCounter 
+                  value={350} 
+                  label="Active Warriors" 
+                  icon="⚔️" 
+                />
+                <StatCounter 
+                  value={95} 
+                  label="Success Rate" 
+                  icon="🎯" 
+                />
+                <StatCounter 
+                  value={180} 
+                  label="Boss Battles Won" 
+                  icon="👑" 
+                />
+              </div>
+
+              <motion.div 
+                className="mt-16 text-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <div className="inline-block relative">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => navigate('/transformations')}
+                    className="px-8 py-4 bg-gradient-to-r from-game-blue to-game-red rounded-lg font-gaming text-xl relative overflow-hidden group"
+                  >
+                    <span className="relative z-10">View Leaderboard</span>
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-game-red to-game-blue opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    />
+                  </motion.button>
+                  <motion.div
+                    className="absolute -top-2 -right-2 bg-game-red text-white text-sm px-2 py-1 rounded font-gaming"
+                    animate={{
+                      scale: [1, 1.2, 1],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                    }}
+                  >
+                    NEW!
+                  </motion.div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </motion.section>
+
+          {/* Game-Style Progress Section */}
+          <motion.section
+            variants={fadeInUp}
+            className="py-16 sm:py-24 relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-game-blue/5 to-transparent" />
+            <div className="relative max-w-4xl mx-auto px-4">
+              <motion.div 
+                className="bg-black/40 backdrop-blur-md rounded-2xl p-8 border border-game-blue/30"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="flex items-center justify-between mb-8">
+                  <h3 className="text-2xl sm:text-3xl font-gaming text-game-blue">Current Quest</h3>
+                  <span className="px-4 py-2 bg-game-red/20 rounded-lg text-game-red font-gaming">LEVEL 1</span>
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <div className="flex justify-between text-game-white/90 mb-2">
+                      <span className="font-gaming">Daily Workout Streak</span>
+                      <span className="font-gaming">7/10</span>
+                    </div>
+                    <div className="h-4 bg-black/50 rounded-full overflow-hidden">
+                      <motion.div
+                        className="h-full w-[70%] bg-gradient-to-r from-game-blue to-game-red"
+                        initial={{ width: 0 }}
+                        whileInView={{ width: "70%" }}
+                        transition={{ duration: 1 }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between text-game-white/90 mb-2">
+                      <span className="font-gaming">Nutrition Goals</span>
+                      <span className="font-gaming">85%</span>
+                    </div>
+                    <div className="h-4 bg-black/50 rounded-full overflow-hidden">
+                      <motion.div
+                        className="h-full w-[85%] bg-gradient-to-r from-game-blue to-game-red"
+                        initial={{ width: 0 }}
+                        whileInView={{ width: "85%" }}
+                        transition={{ duration: 1 }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-4 mt-8">
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className="px-4 py-2 bg-game-blue/20 rounded-lg border border-game-blue/50"
+                    >
+                      <span className="font-gaming text-game-blue">🎯 Perfect Form</span>
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className="px-4 py-2 bg-game-red/20 rounded-lg border border-game-red/50"
+                    >
+                      <span className="font-gaming text-game-red">💪 Strength +10</span>
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className="px-4 py-2 bg-white/10 rounded-lg border border-white/30"
+                    >
+                      <span className="font-gaming text-white">⚡ Speed +5</span>
+                    </motion.div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </motion.section>
+
+          {/* Quote Section */}
+          <motion.section
+            variants={fadeInUp}
+            className="py-16 sm:py-24 relative overflow-hidden"
+          >
+            <div className="absolute inset-0">
+              <div className="absolute inset-0 bg-gradient-to-r from-game-blue/20 via-black to-game-red/20" />
+              <motion.div
+                className="absolute top-0 left-0 w-full h-full"
+                animate={{
+                  background: [
+                    'radial-gradient(circle at 30% 30%, rgba(0,163,255,0.1) 0%, transparent 50%)',
+                    'radial-gradient(circle at 70% 70%, rgba(255,0,0,0.1) 0%, transparent 50%)',
+                    'radial-gradient(circle at 30% 30%, rgba(0,163,255,0.1) 0%, transparent 50%)'
+                  ]
+                }}
+                transition={{ duration: 10, repeat: Infinity }}
+              />
+            </div>
+            
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.8 }}
+              className="relative z-10 max-w-4xl mx-auto text-center px-4"
+            >
+              <motion.div 
+                className="mb-8 text-6xl"
+                animate={{ 
+                  rotate: [0, 10, -10, 0],
+                  scale: [1, 1.1, 1]
+                }}
+                transition={{ duration: 5, repeat: Infinity }}
+              >
+                🏆
+              </motion.div>
+              
+              <motion.div
+                className="relative bg-black/40 backdrop-blur-sm p-8 rounded-2xl border border-game-blue/30"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="absolute -top-4 -left-4 w-8 h-8 border-t-2 border-l-2 border-game-blue" />
+                <div className="absolute -top-4 -right-4 w-8 h-8 border-t-2 border-r-2 border-game-red" />
+                <div className="absolute -bottom-4 -left-4 w-8 h-8 border-b-2 border-l-2 border-game-red" />
+                <div className="absolute -bottom-4 -right-4 w-8 h-8 border-b-2 border-r-2 border-game-blue" />
+                
+                <p className="text-xl sm:text-2xl md:text-3xl font-gaming mb-6 text-game-white leading-relaxed">
+                  "In the game of fitness, every rep is a power-up, 
+                  every set is a level, and every workout is a boss fight. 
+                  Are you ready to become the main character of your story?"
+                </p>
+                
+                <motion.div
+                  className="text-game-blue font-gaming text-xl"
+                  animate={{ 
+                    color: ['#00A3FF', '#FF0000', '#00A3FF']
+                  }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                >
+                  - Coach Moumen
+                </motion.div>
+              </motion.div>
+              
+              <div className="mt-12 flex flex-wrap justify-center gap-4">
+                <motion.div
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-game-blue/20 to-game-blue/10 border border-game-blue"
+                  whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(0,163,255,0.3)' }}
+                >
+                  <span className="text-game-blue font-gaming">Elite Trainer</span>
+                </motion.div>
+                <motion.div
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-game-red/20 to-game-red/10 border border-game-red"
+                  whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(255,0,0,0.3)' }}
+                >
+                  <span className="text-game-red font-gaming">Fitness Master</span>
+                </motion.div>
+                <motion.div
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-game-blue/20 to-game-red/20 border-2 border-white/20"
+                  whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(255,255,255,0.2)' }}
+                >
+                  <span className="text-white font-gaming">Level 99</span>
+                </motion.div>
+              </div>
+            </motion.div>
           </motion.section>
 
           {/* Features Section */}

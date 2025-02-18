@@ -9,35 +9,106 @@
   --color-blue: #00A3FF;
 }
 
-@layer base {
-  body {
-    @apply bg-black text-white;
-    font-family: 'Inter', sans-serif;
-  }
+/* Basic styles */
+body {
+  @apply bg-black text-white font-gaming;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  letter-spacing: 1px;
+}
 
-  /* Scrollbar styling */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
+/* Text styles */
+h1, h2, h3, h4, h5, h6 {
+  @apply font-gaming;
+  letter-spacing: 2px;
+}
 
-  ::-webkit-scrollbar-track {
-    @apply bg-black;
-  }
+p, span, div {
+  @apply font-gaming;
+  letter-spacing: 1px;
+}
 
-  ::-webkit-scrollbar-thumb {
-    @apply bg-game-blue rounded-full;
-    border: 2px solid transparent;
-    background-clip: padding-box;
-  }
+/* Button and interactive elements */
+button, a, input[type="submit"], input[type="button"] {
+  @apply font-gaming;
+  letter-spacing: 1px;
+}
 
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-game-red;
+/* Form elements */
+input, textarea, select {
+  @apply font-gaming;
+  letter-spacing: 1px;
+}
+
+/* Custom Gaming Cursor */
+.cursor-gaming {
+  cursor: url('/cursors/cursor-default.png'), auto;
+}
+
+.cursor-gaming-pointer {
+  cursor: url('/cursors/cursor-pointer.png'), pointer;
+}
+
+/* Apply gaming cursor to interactive elements */
+a, button, [role="button"], select, input[type="submit"], input[type="button"] {
+  @apply cursor-gaming-pointer;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-black;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-game-blue rounded-full;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-game-red;
+}
+
+/* Loading animation */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Cursor animations */
+@keyframes cursorPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 163, 255, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 163, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 163, 255, 0);
   }
 }
 
+@keyframes cursorPulseRed {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+  }
+}
+
+/* Component styles */
 @layer components {
   .neon-button {
-    @apply relative px-6 py-3 text-white font-bold overflow-hidden transition-all duration-300
+    @apply relative px-4 py-2 text-white font-gaming text-sm overflow-hidden transition-all duration-300
            before:absolute before:inset-0 before:bg-[#00A3FF] before:opacity-50
            before:blur-lg hover:before:opacity-75;
     text-shadow: 0 0 8px rgba(0, 163, 255, 0.5);
@@ -53,9 +124,10 @@
   }
 
   .game-card {
-    @apply bg-black/80 border border-[#00A3FF] rounded-lg p-6
+    @apply bg-black/80 border border-[#00A3FF] rounded-lg p-4
            backdrop-blur-md transition-all duration-300
-           hover:border-[#FF0000] hover:shadow-[0_0_15px_rgba(0,163,255,0.5)];
+           hover:border-[#FF0000] hover:shadow-[0_0_15px_rgba(0,163,255,0.5)]
+           font-gaming;
     position: relative;
     overflow: hidden;
   }

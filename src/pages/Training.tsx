@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
+import FitnessScene from '@/components/FitnessScene';
+import { FaLock, FaClock, FaFacebook } from 'react-icons/fa';
 
 interface Mission {
   id: string;
@@ -222,68 +224,153 @@ const Training = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen pt-20 sm:pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black to-game-black/95">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-12 sm:mb-16"
-          >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-gaming font-bold mb-6 sm:mb-8">
-              Available <span className="text-game-blue">Missions</span>
-            </h1>
-            <p className="text-lg sm:text-xl text-game-white/90 max-w-3xl mx-auto px-4">
-              Choose your next fitness mission from our curated selection of
-              workouts. Each mission offers unique challenges and rewards.
-            </p>
-          </motion.div>
+      <div className="relative min-h-screen bg-game-black">
+        {/* Background Scene with Blur */}
+        <div className="fixed inset-0 pointer-events-none backdrop-blur-xl">
+          <FitnessScene />
+        </div>
 
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-8 sm:mb-12 px-4">
-            {['all', 'strength', 'cardio', 'flexibility', 'recovery'].map((type) => (
-              <Button
-                key={type}
-                variant={selectedType === type ? 'primary' : 'secondary'}
-                size="md"
-                glowing={selectedType === type}
-                onClick={() => setSelectedType(type)}
-                className="capitalize text-sm sm:text-base"
+        {/* Content */}
+        <div className="relative z-10 h-screen flex items-center justify-center px-4">
+          <div className="text-center max-w-4xl mx-auto">
+            {/* Lock Icon */}
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 260,
+                damping: 20,
+                delay: 0.3
+              }}
+              className="mb-8"
+            >
+              <motion.div
+                animate={{
+                  boxShadow: [
+                    "0 0 20px rgba(0,163,255,0.3)",
+                    "0 0 40px rgba(0,163,255,0.5)",
+                    "0 0 20px rgba(0,163,255,0.3)"
+                  ]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+                className="w-24 h-24 mx-auto bg-black/50 rounded-full flex items-center justify-center backdrop-blur-lg border border-game-blue/30"
               >
-                {type === 'all' ? 'All Missions' : type}
-              </Button>
-            ))}
-          </div>
+                <FaLock className="text-5xl text-game-blue" />
+              </motion.div>
+            </motion.div>
 
-          <motion.div layout className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-            <AnimatePresence mode="popLayout">
-              {filteredMissions.map((mission) => (
-                <MissionCard key={mission.id} mission={mission} />
+            {/* Coming Soon Text */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="text-5xl sm:text-7xl font-gaming mb-6 relative inline-block"
+            >
+              <span className="text-game-blue">Missions</span>
+              <motion.span
+                animate={{
+                  opacity: [0.5, 1, 0.5],
+                  scale: [1, 1.02, 1]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+                className="absolute -top-6 -right-6 text-2xl text-game-gold"
+              >
+                BETA
+              </motion.span>
+            </motion.h1>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+              className="text-xl sm:text-2xl font-gaming text-game-white/80 mb-8"
+            >
+              <span className="text-game-red">Launching Soon</span>
+            </motion.div>
+
+            {/* Timer-like Display */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 }}
+              className="flex items-center justify-center gap-4 mb-12"
+            >
+              <div className="flex items-center gap-2 bg-black/50 px-4 py-2 rounded-lg backdrop-blur-lg border border-game-blue/30">
+                <FaClock className="text-game-blue" />
+                <span className="font-gaming text-game-white/90">Phase 1 Development</span>
+              </div>
+            </motion.div>
+
+            {/* Features Preview */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1 }}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto mb-12"
+            >
+              {[
+                'Daily Quests',
+                'Achievement System',
+                'Progress Tracking',
+                'Skill Trees',
+                'Leaderboards',
+                'Special Events'
+              ].map((feature, index) => (
+                <motion.div
+                  key={feature}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 1.1 + index * 0.1 }}
+                  className="bg-black/30 backdrop-blur-md border border-game-blue/20 rounded-lg px-4 py-3"
+                >
+                  <span className="text-game-white/70 font-gaming text-sm">
+                    {feature}
+                  </span>
+                </motion.div>
               ))}
-            </AnimatePresence>
-          </motion.div>
+            </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.8 }}
-            className="mt-16 sm:mt-24 text-center px-4"
-          >
-            <Card glowing className="inline-block max-w-2xl w-full">
-              <h2 className="text-2xl sm:text-3xl font-gaming mb-4 sm:mb-6">Custom Mission?</h2>
-              <p className="text-sm sm:text-base text-game-white/80 mb-6 sm:mb-8">
-                Need a specialized workout program? Let's create a custom mission
-                that matches your goals and preferences.
-              </p>
-              <Button
-                variant="secondary"
-                size="lg"
-                glowing
-                fullWidth
+            {/* Join Facebook Community CTA */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.5 }}
+              className="inline-block"
+            >
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-[#1877F2] hover:bg-[#0D65D9] text-white font-gaming px-8 py-4 rounded-lg
+                  flex items-center gap-3 transition-colors duration-300 group relative overflow-hidden"
+                onClick={() => window.open('#', '_blank')}
               >
-                Create Custom Mission
-              </Button>
-            </Card>
-          </motion.div>
+                <FaFacebook className="text-2xl" />
+                <span>Join Our Community</span>
+                <motion.div
+                  className="absolute inset-0 bg-white/10"
+                  animate={{
+                    x: ["0%", "100%"]
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    repeatType: "mirror",
+                    ease: "linear"
+                  }}
+                  style={{ clipPath: "polygon(0 0, 20% 0, 60% 100%, 40% 100%)" }}
+                />
+              </motion.button>
+            </motion.div>
+          </div>
         </div>
       </div>
     </PageTransition>

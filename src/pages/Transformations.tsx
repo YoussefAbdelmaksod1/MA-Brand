@@ -1,263 +1,271 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
 import Card from '@/components/Card';
-import Button from '@/components/Button';
+import FitnessScene from '@/components/FitnessScene';
+import { FaTrophy, FaStar, FaFire, FaMedal, FaWeightHanging, FaChartLine, FaCalendar } from 'react-icons/fa';
 
 interface Transformation {
   id: string;
-  name: string;
-  rank: 'Bronze' | 'Silver' | 'Gold' | 'Diamond';
+  playerName: string;
+  beforeImage: string;
+  afterImage: string;
+  achievement: string;
   duration: string;
-  achievements: string[];
-  stats: {
-    strengthGain: number;
-    weightLoss: number;
-    enduranceBoost: number;
-    totalWorkouts: number;
-  };
+  weightLost: string;
+  rank: number;
+  xpGained: number;
+  program: string;
   testimonial: string;
+  badges: string[];
 }
 
+// Placeholder data - we'll update the images when you provide them
 const transformations: Transformation[] = [
   {
-    id: 'tr-001',
-    name: 'Alex "The Warrior" Chen',
-    rank: 'Diamond',
-    duration: '12 months',
-    achievements: [
-      'Lost 30kg',
-      'Gained significant muscle mass',
-      'Completed 300+ workouts',
-      'Achieved 5 fitness milestones',
-    ],
-    stats: {
-      strengthGain: 85,
-      weightLoss: 95,
-      enduranceBoost: 90,
-      totalWorkouts: 320,
-    },
-    testimonial: "Moumen's gaming-inspired approach made fitness fun and addictive. I've never felt stronger or more confident!",
+    id: '1',
+    playerName: 'Noor Eldin Mahmoud',
+    beforeImage: '/Clients/Before/client_1.jpg',
+    afterImage: '/Clients/After/client_1.jpg',
+    achievement: 'Player One',
+    duration: '12 weeks',
+    weightLost: '15 kg',
+    rank: 1,
+    xpGained: 5000,
+    program: 'Elite Performance System',
+    testimonial: "Coach Moumen's program completely changed my life. The gaming approach made fitness fun!",
+    badges: ['Weight Warrior', 'Consistency King', 'Transformation Elite']
   },
-  {
-    id: 'tr-002',
-    name: 'Sarah "Swift" Johnson',
-    rank: 'Gold',
-    duration: '8 months',
-    achievements: [
-      'Improved running speed by 40%',
-      'Completed marathon',
-      'Lost 15kg',
-      'Achieved 3 fitness milestones',
-    ],
-    stats: {
-      strengthGain: 70,
-      weightLoss: 85,
-      enduranceBoost: 95,
-      totalWorkouts: 280,
-    },
-    testimonial: 'The gamification elements kept me motivated. Every workout felt like a new quest to conquer!',
-  },
-  {
-    id: 'tr-003',
-    name: 'Mike "Tank" Thompson',
-    rank: 'Silver',
-    duration: '6 months',
-    achievements: [
-      'Gained 10kg muscle',
-      'Doubled strength numbers',
-      'Completed 200+ workouts',
-      'Achieved 2 fitness milestones',
-    ],
-    stats: {
-      strengthGain: 90,
-      weightLoss: 60,
-      enduranceBoost: 75,
-      totalWorkouts: 220,
-    },
-    testimonial: 'The structured progression system made it easy to track my gains and stay motivated.',
-  },
-  {
-    id: 'tr-004',
-    name: 'Emma "Agile" Martinez',
-    rank: 'Bronze',
-    duration: '3 months',
-    achievements: [
-      'Improved flexibility by 60%',
-      'Lost 8kg',
-      'Completed 100+ workouts',
-      'Achieved first fitness milestone',
-    ],
-    stats: {
-      strengthGain: 65,
-      weightLoss: 75,
-      enduranceBoost: 80,
-      totalWorkouts: 120,
-    },
-    testimonial: 'As a beginner, the gaming approach made fitness less intimidating and more enjoyable.',
-  },
+  // Add more transformations here when you have the images
 ];
 
 const rankColors = {
-  Bronze: 'from-orange-700/20 to-orange-900/20 border-orange-500',
-  Silver: 'from-gray-400/20 to-gray-600/20 border-gray-400',
-  Gold: 'from-yellow-400/20 to-yellow-600/20 border-yellow-400',
-  Diamond: 'from-blue-400/20 to-blue-600/20 border-blue-400',
+  1: 'from-yellow-400 to-yellow-600',
+  2: 'from-gray-300 to-gray-500',
+  3: 'from-amber-600 to-amber-800',
 };
 
-const StatBar = ({ value, color }: { value: number; color: string }) => (
-  <div className="h-1.5 sm:h-2 bg-black/50 rounded-full overflow-hidden">
-    <motion.div
-      initial={{ width: 0 }}
-      animate={{ width: `${value}%` }}
-      transition={{ duration: 1, delay: 0.5 }}
-      className={`h-full ${color}`}
-    />
-  </div>
-);
+const TransformationCard = ({ transformation, index }: { transformation: Transformation; index: number }) => {
+  const [isFlipped, setIsFlipped] = useState(false);
 
-const TransformationCard = ({ transformation }: { transformation: Transformation }) => {
   return (
-    <Card
-      glowing
-      interactive
-      size="lg"
-      className={`h-full bg-gradient-to-br ${rankColors[transformation.rank]} border-2`}
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="relative"
+      onClick={() => setIsFlipped(!isFlipped)}
     >
-      <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4 sm:mb-6">
-        <div>
-          <h3 className="text-xl sm:text-2xl font-gaming text-game-white mb-2">
-            {transformation.name}
-          </h3>
-          <span className="text-sm font-gaming text-game-blue">
-            {transformation.duration} Journey
-          </span>
-        </div>
-        <span className={`px-3 sm:px-4 py-1 rounded-full text-sm font-gaming bg-black/30 border border-current
-          ${transformation.rank === 'Bronze' ? 'text-orange-500' :
-          transformation.rank === 'Silver' ? 'text-gray-400' :
-          transformation.rank === 'Gold' ? 'text-yellow-400' :
-          'text-blue-400'}`}
+      <Card
+        glowing
+        interactive
+        className="relative overflow-hidden transform transition-all duration-500 h-full cursor-pointer"
+      >
+        {/* Rank Badge */}
+        <motion.div
+          className={`absolute top-2 sm:top-4 right-2 sm:right-4 w-8 sm:w-12 h-8 sm:h-12 rounded-full 
+            bg-gradient-to-r ${rankColors[transformation.rank as keyof typeof rankColors] || 'from-blue-400 to-blue-600'}
+            flex items-center justify-center z-20`}
+          animate={{
+            scale: [1, 1.1, 1],
+            boxShadow: [
+              '0 0 20px rgba(255,255,255,0.2)',
+              '0 0 40px rgba(255,255,255,0.4)',
+              '0 0 20px rgba(255,255,255,0.2)'
+            ]
+          }}
+          transition={{ duration: 2, repeat: Infinity }}
         >
-          {transformation.rank}
-        </span>
-      </div>
+          <span className="text-base sm:text-xl font-gaming text-white">#{transformation.rank}</span>
+        </motion.div>
 
-      <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8">
-        <div>
-          <div className="flex justify-between mb-2">
-            <span className="text-sm sm:text-base text-game-white/80">Strength</span>
-            <span className="text-sm sm:text-base text-game-blue">{transformation.stats.strengthGain}%</span>
-          </div>
-          <StatBar value={transformation.stats.strengthGain} color="bg-red-500" />
-        </div>
-        <div>
-          <div className="flex justify-between mb-2">
-            <span className="text-sm sm:text-base text-game-white/80">Weight Loss</span>
-            <span className="text-sm sm:text-base text-game-blue">{transformation.stats.weightLoss}%</span>
-          </div>
-          <StatBar value={transformation.stats.weightLoss} color="bg-green-500" />
-        </div>
-        <div>
-          <div className="flex justify-between mb-2">
-            <span className="text-sm sm:text-base text-game-white/80">Endurance</span>
-            <span className="text-sm sm:text-base text-game-blue">{transformation.stats.enduranceBoost}%</span>
-          </div>
-          <StatBar value={transformation.stats.enduranceBoost} color="bg-blue-500" />
-        </div>
-      </div>
+        <div className="p-3 sm:p-6">
+          <motion.div
+            className="relative w-full"
+            animate={{ rotateY: isFlipped ? 180 : 0 }}
+            transition={{ duration: 0.6 }}
+            style={{ transformStyle: 'preserve-3d' }}
+          >
+            {/* Front Side */}
+            <div className={`relative ${isFlipped ? 'invisible' : 'visible'}`}>
+              {/* Before/After Images */}
+              <div className="relative h-48 sm:h-80 flex">
+                <motion.div
+                  className="w-1/2 relative overflow-hidden"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <img
+                    src={transformation.beforeImage}
+                    alt="Before"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute bottom-0 left-0 bg-black/50 px-2 py-1 text-[10px] sm:text-xs font-gaming">
+                    BEFORE
+                  </div>
+                </motion.div>
+                <motion.div
+                  className="w-1/2 relative overflow-hidden"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <img
+                    src={transformation.afterImage}
+                    alt="After"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute bottom-0 right-0 bg-black/50 px-2 py-1 text-[10px] sm:text-xs font-gaming">
+                    AFTER
+                  </div>
+                </motion.div>
+              </div>
 
-      <div className="space-y-4">
-        <h4 className="text-lg sm:text-xl font-gaming text-game-blue">Achievements</h4>
-        <ul className="space-y-2">
-          {transformation.achievements.map((achievement, index) => (
-            <li key={index} className="flex items-center gap-2 text-sm sm:text-base text-game-white/80">
-              <span className="text-game-blue">✓</span>
-              {achievement}
-            </li>
-          ))}
-        </ul>
-      </div>
+              {/* Player Info */}
+              <div className="mt-4 sm:mt-6">
+                <h3 className="text-xl sm:text-2xl font-gaming text-game-white mb-2">
+                  {transformation.playerName}
+                </h3>
+                <div className="flex items-center gap-2 mb-4">
+                  <FaTrophy className="text-game-gold text-base sm:text-lg" />
+                  <span className="text-game-gold font-gaming text-xs sm:text-sm">
+                    {transformation.achievement}
+                  </span>
+                </div>
 
-      <blockquote className="mt-6 sm:mt-8 p-4 bg-black/30 rounded-lg border-l-4 border-game-blue">
-        <p className="text-sm sm:text-base text-game-white/90 italic">"{transformation.testimonial}"</p>
-      </blockquote>
-    </Card>
+                {/* Stats Grid */}
+                <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="bg-black/30 rounded-lg p-2 sm:p-3 backdrop-blur-sm">
+                    <div className="flex items-center gap-1 sm:gap-2 text-game-blue">
+                      <FaCalendar className="text-xs sm:text-base" />
+                      <span className="text-[10px] sm:text-sm font-gaming">{transformation.duration}</span>
+                    </div>
+                  </div>
+                  <div className="bg-black/30 rounded-lg p-2 sm:p-3 backdrop-blur-sm">
+                    <div className="flex items-center gap-1 sm:gap-2 text-game-red">
+                      <FaWeightHanging className="text-xs sm:text-base" />
+                      <span className="text-[10px] sm:text-sm font-gaming">{transformation.weightLost}</span>
+                    </div>
+                  </div>
+                  <div className="bg-black/30 rounded-lg p-2 sm:p-3 backdrop-blur-sm">
+                    <div className="flex items-center gap-1 sm:gap-2 text-game-gold">
+                      <FaFire className="text-xs sm:text-base" />
+                      <span className="text-[10px] sm:text-sm font-gaming">+{transformation.xpGained} XP</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Badges */}
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                  {transformation.badges.map((badge, i) => (
+                    <motion.span
+                      key={i}
+                      className="px-2 sm:px-3 py-0.5 sm:py-1 bg-game-blue/20 text-game-blue rounded-full text-[10px] sm:text-xs font-gaming"
+                      whileHover={{ scale: 1.1 }}
+                    >
+                      {badge}
+                    </motion.span>
+                  ))}
+                </div>
+
+                <div className="mt-3 sm:mt-4 text-center text-[10px] sm:text-sm text-game-white/60">
+                  Tap to see journey details
+                </div>
+              </div>
+            </div>
+
+            {/* Back Side (Journey Details) */}
+            <div
+              className={`absolute inset-0 bg-black/90 backdrop-blur-md p-4 sm:p-6 ${isFlipped ? 'visible' : 'invisible'}`}
+              style={{ transform: 'rotateY(180deg)', backfaceVisibility: 'hidden' }}
+            >
+              <h4 className="text-lg sm:text-xl font-gaming text-game-blue mb-4">Journey Details</h4>
+              
+              <div className="space-y-4 sm:space-y-6">
+                <div>
+                  <h5 className="text-base sm:text-lg font-gaming text-game-gold mb-2">Program</h5>
+                  <p className="text-sm sm:text-base text-game-white/80">{transformation.program}</p>
+                </div>
+
+                <div>
+                  <h5 className="text-base sm:text-lg font-gaming text-game-gold mb-2">Testimonial</h5>
+                  <p className="text-sm sm:text-base text-game-white/80 italic">{transformation.testimonial}</p>
+                </div>
+
+                <div>
+                  <h5 className="text-base sm:text-lg font-gaming text-game-gold mb-2">Achievements</h5>
+                  <div className="grid grid-cols-2 gap-2 sm:gap-4">
+                    <div className="bg-black/30 rounded-lg p-2 sm:p-3">
+                      <div className="flex items-center gap-1 sm:gap-2 text-game-blue">
+                        <FaChartLine className="text-xs sm:text-base" />
+                        <span className="text-[10px] sm:text-sm">Progress Elite</span>
+                      </div>
+                    </div>
+                    <div className="bg-black/30 rounded-lg p-2 sm:p-3">
+                      <div className="flex items-center gap-1 sm:gap-2 text-game-red">
+                        <FaFire className="text-xs sm:text-base" />
+                        <span className="text-[10px] sm:text-sm">Transformation Master</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-3 sm:mt-4 text-center text-[10px] sm:text-sm text-game-white/60">
+                Tap to see transformation
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </Card>
+    </motion.div>
   );
 };
 
 const Transformations = () => {
-  const [selectedRank, setSelectedRank] = useState<string>('all');
-
-  const filteredTransformations = selectedRank === 'all'
-    ? transformations
-    : transformations.filter(t => t.rank.toLowerCase() === selectedRank);
-
   return (
     <PageTransition>
-      <div className="min-h-screen pt-20 sm:pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black to-game-black/95">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-12 sm:mb-16"
-          >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-gaming font-bold mb-6 sm:mb-8">
-              The <span className="text-game-blue">Leaderboard</span>
-            </h1>
-            <p className="text-lg sm:text-xl text-game-white/90 max-w-3xl mx-auto px-4">
-              Witness the incredible transformations of our community members.
-              Each story represents a unique journey of dedication and achievement.
-            </p>
-          </motion.div>
+      <div className="relative min-h-screen bg-game-black">
+        {/* Background Scene */}
+        <div className="fixed inset-0 pointer-events-none">
+          <FitnessScene />
+        </div>
 
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-8 sm:mb-12 px-4">
-            {['all', 'bronze', 'silver', 'gold', 'diamond'].map((rank) => (
-              <Button
-                key={rank}
-                variant={selectedRank === rank ? 'primary' : 'secondary'}
-                size="md"
-                glowing={selectedRank === rank}
-                onClick={() => setSelectedRank(rank)}
-                className="capitalize text-sm sm:text-base"
-              >
-                {rank === 'all' ? 'All Ranks' : rank}
-              </Button>
-            ))}
-          </div>
-
-          <motion.div layout className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-            {filteredTransformations.map((transformation) => (
-              <TransformationCard
-                key={transformation.id}
-                transformation={transformation}
-              />
-            ))}
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.8 }}
-            className="mt-16 sm:mt-24 text-center px-4"
-          >
-            <Card glowing className="inline-block max-w-2xl w-full">
-              <h2 className="text-2xl sm:text-3xl font-gaming mb-4 sm:mb-6">Ready to Join the Ranks?</h2>
-              <p className="text-sm sm:text-base text-game-white/80 mb-6 sm:mb-8">
-                Start your transformation journey today and become part of our
-                growing community of successful fitness gamers.
+        {/* Content */}
+        <div className="relative z-10 pt-20 sm:pt-32 pb-8 sm:pb-16 px-3 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Header */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-8 sm:mb-16"
+            >
+              <h1 className="text-3xl sm:text-5xl md:text-7xl font-gaming font-bold mb-4 sm:mb-8 relative inline-block">
+                Players <span className="text-game-blue">Leaderboard</span>
+                <motion.div
+                  className="absolute -top-4 sm:-top-6 -right-4 sm:-right-6 text-2xl sm:text-4xl text-game-gold"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                >
+                  <FaStar />
+                </motion.div>
+              </h1>
+              <p className="text-base sm:text-xl md:text-2xl text-game-white/90 max-w-3xl mx-auto px-4">
+                Witness the epic transformations of our legendary players
               </p>
-              <Button
-                variant="primary"
-                size="lg"
-                glowing
-                fullWidth
-              >
-                Begin Your Transformation
-              </Button>
-            </Card>
-          </motion.div>
+            </motion.div>
+
+            {/* Transformations Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+              {transformations.map((transformation, index) => (
+                <TransformationCard
+                  key={transformation.id}
+                  transformation={transformation}
+                  index={index}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </PageTransition>

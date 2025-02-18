@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Environment, Float } from '@react-three/drei';
 
 const Logo = () => {
-  const texture = useLoader(TextureLoader, '/2.png');
+  const texture = useLoader(TextureLoader, '/4.gif');
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
