@@ -10,13 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.1.0",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.10",
     "@mui/material": "^5.15.10",
     "@react-three/drei": "^9.121.5",
     "@react-three/fiber": "^8.17.14",
-    "@emailjs/browser": "^4.1.0",
     "framer-motion": "^11.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -25,8 +25,8 @@
     "three": "^0.161.0"
   },
   "devDependencies": {
-    "@types/react": "^18.2.55",
-    "@types/react-dom": "^18.2.19",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
     "@types/three": "^0.161.2",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
@@ -37,7 +37,7 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5.2.2",
+    "typescript": "^5.7.3",
     "vite": "^5.1.0"
   }
 }
