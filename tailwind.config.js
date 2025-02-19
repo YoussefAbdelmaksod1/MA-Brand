@@ -6,41 +6,61 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        'xs': '375px',
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536px',
+      },
       colors: {
         'game-black': '#000000',
-        'game-white': '#FFFFFF',
-        'game-blue': '#00A3FF',
-        'game-red': '#FF0000',
+        'game-white': '#ffffff',
+        'game-blue': '#00a3ff',
+        'game-red': '#ff0000',
+        'game-gold': '#ffd700',
       },
       fontFamily: {
         'gaming': ['Orbitron', 'sans-serif'],
-        'body': ['Inter', 'sans-serif'],
+        'sans': ['Inter', 'system-ui', 'sans-serif'],
+      },
+      spacing: {
+        '18': '4.5rem',
+        '22': '5.5rem',
+        '72': '18rem',
+        '84': '21rem',
+        '96': '24rem',
       },
       animation: {
-        'pulse-blue': 'pulseBlue 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'pulse-red': 'pulseRed 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'float': 'float 6s ease-in-out infinite',
+        'glow': 'glow 2s ease-in-out infinite',
       },
       keyframes: {
-        pulseBlue: {
-          '0%, 100%': { 
-            boxShadow: '0 0 0 0 rgba(0, 163, 255, 0.4)'
-          },
-          '50%': { 
-            boxShadow: '0 0 0 15px rgba(0, 163, 255, 0)'
-          },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-20px)' },
         },
-        pulseRed: {
-          '0%, 100%': { 
-            boxShadow: '0 0 0 0 rgba(255, 0, 0, 0.4)'
-          },
-          '50%': { 
-            boxShadow: '0 0 0 15px rgba(255, 0, 0, 0)'
-          },
+        glow: {
+          '0%, 100%': { filter: 'brightness(100%) blur(0)' },
+          '50%': { filter: 'brightness(150%) blur(3px)' },
         },
       },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(circle at center, var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      backdropBlur: {
+        xs: '2px',
+      },
+      transitionDuration: {
+        '2000': '2000ms',
+      },
+      scale: {
+        '98': '.98',
+      },
+      boxShadow: {
+        'game': '0 0 15px rgba(0,163,255,0.5)',
+        'game-hover': '0 0 30px rgba(0,163,255,0.8)',
+        'game-red': '0 0 15px rgba(255,0,0,0.5)',
+        'game-red-hover': '0 0 30px rgba(255,0,0,0.8)',
       },
     },
   },

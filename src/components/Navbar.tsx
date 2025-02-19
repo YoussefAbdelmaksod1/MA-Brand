@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -7,14 +7,18 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+  // Memoize scroll handler for better performance
+  const handleScroll = useCallback(() => {
+    const shouldBeScrolled = window.scrollY > 50;
+    if (isScrolled !== shouldBeScrolled) {
+      setIsScrolled(shouldBeScrolled);
+    }
+  }, [isScrolled]);
 
-    window.addEventListener('scroll', handleScroll);
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [handleScroll]);
 
   // Close mobile menu when route changes
   useEffect(() => {
@@ -39,7 +43,8 @@ const Navbar = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-20 sm:h-24">
+          {/* Logo */}
           <Link 
             to="/" 
             className="flex items-center"
@@ -48,12 +53,15 @@ const Navbar = () => {
             <motion.img 
               src="/4.gif" 
               alt="Coach Moumen" 
-              className="h-16 w-auto sm:h-20"
+              className="h-20 w-auto sm:h-24 md:h-28"
+              loading="eager"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
             {navLinks.map(({ path, label }) => (
               <Link
                 key={path}
@@ -63,7 +71,7 @@ const Navbar = () => {
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`relative px-4 py-2 font-gaming text-sm tracking-wider
+                  className={`relative px-3 lg:px-4 py-2 font-gaming text-sm tracking-wider
                     ${location.pathname === path 
                       ? 'text-game-white bg-game-blue border-2 border-game-blue rounded-lg' 
                       : 'text-game-white hover:text-game-white'}
@@ -74,11 +82,6 @@ const Navbar = () => {
                     hover:before:opacity-100 overflow-hidden`}
                 >
                   <span className="relative z-10">{label}</span>
-                  <motion.span
-                    className="absolute inset-0 bg-gradient-to-r from-game-blue/0 via-white/10 to-game-blue/0
-                      transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform
-                      duration-1000"
-                  />
                   {location.pathname === path && (
                     <motion.span
                       className="absolute inset-0 rounded-lg"
@@ -105,44 +108,42 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <motion.button 
-            className="md:hidden relative z-50 p-2 rounded-lg bg-gradient-to-r from-game-blue to-game-red
-              border-2 border-game-white hover:from-game-red hover:to-game-blue transition-all duration-300
-              shadow-[0_0_15px_rgba(0,163,255,0.5)]"
+            className="md:hidden fixed top-6 right-6 z-50 p-4 rounded-lg bg-black
+              border-2 border-game-white hover:border-game-blue transition-all duration-300
+              shadow-[0_0_20px_rgba(0,163,255,0.3)]"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <motion.div
-              className="w-6 h-6 relative"
-              animate={isMobileMenuOpen ? "open" : "closed"}
-            >
+            <div className="w-8 h-8 flex flex-col justify-center items-center gap-2">
               <motion.span
-                className="absolute w-full h-0.5 bg-white transform-gpu"
-                style={{ top: "25%" }}
+                className="w-8 h-0.5 bg-white transform-gpu origin-center"
                 variants={{
-                  open: { rotate: 45, y: "160%" },
+                  open: { rotate: 45, y: 3 },
                   closed: { rotate: 0, y: 0 }
                 }}
+                animate={isMobileMenuOpen ? "open" : "closed"}
                 transition={{ duration: 0.3 }}
               />
               <motion.span
-                className="absolute w-full h-0.5 bg-white top-1/2 -translate-y-1/2"
+                className="w-8 h-0.5 bg-white transform-gpu origin-center"
                 variants={{
                   open: { opacity: 0 },
                   closed: { opacity: 1 }
                 }}
+                animate={isMobileMenuOpen ? "open" : "closed"}
                 transition={{ duration: 0.3 }}
               />
               <motion.span
-                className="absolute w-full h-0.5 bg-white transform-gpu"
-                style={{ bottom: "25%" }}
+                className="w-8 h-0.5 bg-white transform-gpu origin-center"
                 variants={{
-                  open: { rotate: -45, y: "-160%" },
+                  open: { rotate: -45, y: -3 },
                   closed: { rotate: 0, y: 0 }
                 }}
+                animate={isMobileMenuOpen ? "open" : "closed"}
                 transition={{ duration: 0.3 }}
               />
-            </motion.div>
+            </div>
           </motion.button>
 
           {/* Mobile Menu */}
@@ -153,23 +154,27 @@ const Navbar = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: "100%" }}
                 transition={{ type: "tween", duration: 0.3 }}
-                className="fixed inset-0 bg-black/95 backdrop-blur-lg md:hidden pt-24"
+                className="fixed inset-0 bg-black z-50 md:hidden"
+                style={{ paddingTop: "8rem" }}
               >
-                <div className="flex flex-col items-center gap-4 p-8">
-                  {navLinks.map(({ path, label }) => (
+                <div className="flex flex-col items-center justify-start min-h-[calc(100vh-8rem)] gap-8 p-8">
+                  {navLinks.map(({ path, label }, index) => (
                     <motion.div
                       key={path}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 20 }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                      className="w-full max-w-sm"
                     >
                       <Link
                         to={path}
-                        className={`relative px-6 py-3 font-gaming text-lg tracking-wider block w-full text-center
+                        className={`relative px-8 py-6 font-gaming text-2xl tracking-wider block w-full text-center
+                          rounded-lg transition-all duration-300
                           ${location.pathname === path 
-                            ? 'text-game-white bg-game-blue rounded-lg' 
-                            : 'text-game-white'}`}
+                            ? 'text-game-white bg-game-blue/20 border-2 border-game-blue shadow-[0_0_20px_rgba(0,163,255,0.5)]' 
+                            : 'text-game-white hover:bg-game-blue/10 border-2 border-transparent hover:border-game-blue/50'}`}
+                        onClick={() => setIsMobileMenuOpen(false)}
                       >
                         {label}
                       </Link>
@@ -185,4 +190,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default memo(Navbar); 

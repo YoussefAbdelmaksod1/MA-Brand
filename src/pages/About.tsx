@@ -4,10 +4,10 @@ import PageTransition from '@/components/PageTransition';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
 import FitnessScene from '@/components/FitnessScene';
-import { FaGraduationCap, FaDumbbell, FaCertificate, FaUserTie, FaChartLine, FaTrophy, FaMedal, FaStar } from 'react-icons/fa';
+import { FaGraduationCap, FaDumbbell, FaCertificate, FaUserTie, FaChartLine, FaTrophy, FaMedal, FaStar, FaUniversity, FaBook } from 'react-icons/fa';
 
 interface TimelineItem {
-  year: string;
+  date: string;
   title: string;
   description: string;
   type: 'education' | 'career' | 'certification' | 'management';
@@ -24,42 +24,50 @@ interface Certification {
   date?: string;
 }
 
+interface Education {
+  degree: string;
+  institution: string;
+  period: string;
+  description: string;
+  icon: React.ReactNode;
+}
+
 const timelineData: TimelineItem[] = [
   {
-    year: '2025',
+    date: 'March 2025',
     title: 'Branch Manager',
     description: 'Leading operations at Elegant and N13 Gyms, overseeing facility management and team development.',
     type: 'management',
-    icon: <FaChartLine className="text-2xl text-purple-500" />,
+    icon: <FaChartLine size={24} className="text-purple-500" />,
     highlight: true
   },
   {
-    year: '2024',
+    date: 'January 2024',
     title: 'Fitness Management',
     description: 'Advanced to Fitness Manager at Dr and Coach, expanding into Personal Training roles at N13 and Elegant Gyms.',
     type: 'management',
-    icon: <FaChartLine className="text-2xl text-purple-500" />
+    icon: <FaChartLine size={24} className="text-purple-500" />
   },
   {
-    year: '2023',
+    date: 'June 2023',
     title: 'Professional Coaching',
     description: 'Gained diverse experience across B1 Gym and Mego Gym, progressing to Operations Manager.',
     type: 'career',
-    icon: <FaDumbbell className="text-2xl text-game-red" />
+    icon: <FaDumbbell size={24} className="text-game-red" />
   },
   {
-    year: '2022',
+    date: 'September 2022',
     title: 'Well and Fit Founder',
     description: 'Established Well and Fit while serving as Vice Head of Education Committee.',
     type: 'career',
-    icon: <FaUserTie className="text-2xl text-game-blue" />
+    icon: <FaUserTie size={24} className="text-game-blue" />
   },
   {
-    year: '2021',
-    title: 'Academic & Digital Pioneer',
-    description: 'Started Sports Science at Alexandria University while launching online coaching initiatives.',
-    type: 'education',
-    icon: <FaGraduationCap className="text-2xl text-game-blue" />
+    date: 'March 2022',
+    title: 'Online Training Launch',
+    description: 'Started online personal training services, reaching clients globally.',
+    type: 'career',
+    icon: <FaDumbbell size={24} className="text-game-red" />
   }
 ];
 
@@ -68,38 +76,58 @@ const certifications: Certification[] = [
     title: 'Sport Nutrition Coach',
     organization: 'Swedish Academy of Sports Training',
     type: 'online',
-    icon: <FaCertificate className="text-2xl text-game-gold" />,
-    description: 'Advanced sports nutrition principles and meal planning'
+    icon: <FaCertificate size={24} className="text-game-gold" />,
+    description: 'Advanced sports nutrition principles and meal planning',
+    date: 'December 2023'
   },
   {
     title: 'Weight Management: Beyond Balancing Calories',
     organization: 'Stanford University',
     type: 'online',
-    icon: <FaCertificate className="text-2xl text-game-gold" />,
-    description: 'Comprehensive approach to sustainable weight management'
+    icon: <FaCertificate size={24} className="text-game-gold" />,
+    description: 'Comprehensive approach to sustainable weight management',
+    date: 'October 2023'
   },
   {
     title: 'Introduction To Food And Health',
     organization: 'Stanford University',
     type: 'online',
-    icon: <FaCertificate className="text-2xl text-game-gold" />,
-    description: 'Foundation in nutrition science and health optimization'
+    icon: <FaCertificate size={24} className="text-game-gold" />,
+    description: 'Foundation in nutrition science and health optimization',
+    date: 'September 2023'
   },
   {
     title: 'Certified Personal Trainer',
     organization: 'TASS UK Academy & PBLS Academy',
     type: 'onsite',
-    icon: <FaCertificate className="text-2xl text-game-gold" />,
+    icon: <FaCertificate size={24} className="text-game-gold" />,
     description: 'Specialized in Sports Nutrition, CFT, and Personal Training',
-    date: '2023'
+    date: 'July 2023'
   },
   {
     title: 'A+ Training Certification',
     organization: 'World Gym',
     type: 'onsite',
-    icon: <FaCertificate className="text-2xl text-game-gold" />,
+    icon: <FaCertificate size={24} className="text-game-gold" />,
     description: 'Excellence in Personal Training methodology and practice',
-    date: '2023'
+    date: 'May 2023'
+  }
+];
+
+const educationData: Education[] = [
+  {
+    degree: 'Bachelor of Sports Science',
+    institution: 'Alexandria University',
+    period: '2021 - Present',
+    description: 'Specializing in Physical Education and Sports Training, with focus on advanced training methodologies and sports nutrition.',
+    icon: <FaUniversity size={24} className="text-game-blue" />
+  },
+  {
+    degree: 'Sports Nutrition Advanced Studies',
+    institution: 'International Sports Sciences Association',
+    period: '2023',
+    description: 'Specialized program in sports nutrition and performance optimization.',
+    icon: <FaBook size={24} className="text-game-blue" />
   }
 ];
 
@@ -107,17 +135,25 @@ const TimelineItem = ({ item, index }: { item: TimelineItem; index: number }) =>
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
+  const formatDate = (dateStr: string) => {
+    const [month, year] = dateStr.split(' ');
+    const monthAbbr = month.substring(0, 3).toUpperCase();
+    return { monthAbbr, year };
+  };
+
+  const { monthAbbr, year } = formatDate(item.date);
+
   return (
     <motion.div
       ref={ref}
       initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
       animate={isInView ? { opacity: 1, x: 0 } : {}}
       transition={{ duration: 0.8, delay: index * 0.1 }}
-      className="relative mb-16 last:mb-0"
+      className="relative mb-16 last:mb-0 pl-8 sm:pl-32"
     >
-      {/* Year Badge */}
+      {/* Date Badge */}
       <motion.div
-        className={`absolute -left-4 sm:-left-32 top-0 flex items-center gap-2 bg-opacity-20 px-4 py-2 rounded-lg
+        className={`absolute left-0 sm:left-0 top-0 flex items-center gap-2 px-4 py-2 rounded-lg
           ${item.type === 'education' ? 'text-game-blue' : 
             item.type === 'management' ? 'text-purple-500' : 
             'text-game-red'}`}
@@ -126,9 +162,9 @@ const TimelineItem = ({ item, index }: { item: TimelineItem; index: number }) =>
         transition={{ duration: 0.5, delay: index * 0.3 }}
         whileHover={{ scale: 1.1 }}
       >
-        <div className="hidden sm:block w-12 h-[2px] bg-gradient-to-r from-game-blue to-game-red" />
-        <div className="text-xl sm:text-3xl font-gaming">
-          {item.date}
+        <div className="flex flex-col items-center">
+          <span className="text-xl sm:text-2xl font-gaming tracking-wider">{monthAbbr}</span>
+          <span className="text-sm font-gaming opacity-80">{year}</span>
         </div>
       </motion.div>
 
@@ -137,12 +173,26 @@ const TimelineItem = ({ item, index }: { item: TimelineItem; index: number }) =>
         glowing
         interactive
         size="sm"
-        className={`ml-8 sm:ml-8 max-w-2xl transform transition-all duration-300 hover:scale-105
+        className={`transform transition-all duration-300 hover:scale-105
           ${item.type === 'education' ? 'border-game-blue' : 
-            item.type === 'career' ? 'border-game-red' : 'border-yellow-400'}`}
+            item.type === 'career' ? 'border-game-red' : 
+            item.type === 'management' ? 'border-purple-500' : 'border-yellow-400'}`}
       >
-        <div className="flex items-start gap-4">
-          <span className="text-2xl sm:text-3xl">{item.icon}</span>
+        <div className="flex items-start gap-4 p-4">
+          <motion.div
+            className="relative"
+            whileHover={{ scale: 1.1, rotate: 360 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className={`absolute inset-0 opacity-20 blur-lg rounded-full
+              ${item.type === 'education' ? 'bg-game-blue' : 
+                item.type === 'career' ? 'bg-game-red' : 
+                item.type === 'management' ? 'bg-purple-500' : 'bg-yellow-400'}`} 
+            />
+            <div className="relative">
+              {item.icon}
+            </div>
+          </motion.div>
           <div>
             <h3 className="text-lg sm:text-xl font-gaming text-game-white mb-2">{item.title}</h3>
             <p className="text-sm text-game-white/80">{item.description}</p>
@@ -151,9 +201,30 @@ const TimelineItem = ({ item, index }: { item: TimelineItem; index: number }) =>
       </Card>
 
       {/* Timeline Line */}
-      <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-game-blue via-game-red to-game-blue">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 sm:w-4 h-3 sm:h-4 bg-game-blue rounded-full 
-          shadow-[0_0_10px_rgba(0,163,255,0.7)] animate-pulse" />
+      <div className="absolute left-4 sm:left-4 top-0 bottom-0 w-[2px] bg-gradient-to-b from-game-blue via-game-red to-game-blue">
+        <motion.div 
+          className={`absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full
+            ${item.type === 'education' ? 'bg-game-blue' : 
+              item.type === 'career' ? 'bg-game-red' : 
+              item.type === 'management' ? 'bg-purple-500' : 'bg-yellow-400'}`}
+          style={{
+            boxShadow: `0 0 10px ${
+              item.type === 'education' ? 'rgba(0,163,255,0.7)' : 
+              item.type === 'career' ? 'rgba(255,0,0,0.7)' : 
+              item.type === 'management' ? 'rgba(168,85,247,0.7)' : 
+              'rgba(234,179,8,0.7)'
+            }`
+          }}
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.5, 1, 0.5]
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
       </div>
     </motion.div>
   );
@@ -206,6 +277,46 @@ const CertificationCard = ({ cert, index }: { cert: Certification; index: number
           >
             {cert.type.toUpperCase()}
           </motion.span>
+        </div>
+      </Card>
+    </motion.div>
+  );
+};
+
+const EducationCard = ({ edu, index }: { edu: Education; index: number }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+    >
+      <Card
+        glowing
+        interactive
+        size="sm"
+        className="h-full transform hover:-translate-y-2 transition-all duration-300
+          backdrop-blur-lg bg-black/40 border-game-blue border-opacity-50 hover:border-opacity-100"
+      >
+        <div className="flex flex-col items-center p-6 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20 pointer-events-none">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-game-blue/20 rounded-full blur-2xl"></div>
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-game-blue/20 rounded-full blur-2xl"></div>
+          </div>
+          <motion.div
+            className="relative"
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {edu.icon}
+          </motion.div>
+          <h3 className="text-lg font-gaming mt-4 mb-2 text-center relative z-10">{edu.degree}</h3>
+          <p className="text-sm text-game-white/80 text-center mb-2 relative z-10">{edu.institution}</p>
+          <p className="text-xs text-game-blue text-center mb-2 relative z-10">{edu.period}</p>
+          <p className="text-xs text-game-white/60 text-center relative z-10">{edu.description}</p>
         </div>
       </Card>
     </motion.div>
@@ -294,59 +405,42 @@ const About = () => {
             </motion.div>
 
             {/* Timeline Section */}
-            <div className="max-w-4xl mx-auto relative">
-              {/* Background Effects */}
-              <div className="absolute inset-0 pointer-events-none">
-                <motion.div 
-                  className="absolute top-0 right-0 w-96 h-96 bg-game-blue/5 rounded-full blur-3xl"
-                  animate={{
-                    scale: [1, 1.2, 1],
-                    opacity: [0.3, 0.5, 0.3],
-                  }}
-                  transition={{
-                    duration: 8,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-                <motion.div 
-                  className="absolute bottom-0 left-0 w-96 h-96 bg-game-red/5 rounded-full blur-3xl"
-                  animate={{
-                    scale: [1.2, 1, 1.2],
-                    opacity: [0.5, 0.3, 0.5],
-                  }}
-                  transition={{
-                    duration: 8,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
+            <section className="mb-24">
+              <h2 className="text-4xl font-gaming text-center mb-16">
+                My <span className="text-game-blue">Journey</span>
+              </h2>
+              <div className="relative max-w-5xl mx-auto px-4">
+                <div className="ml-4 sm:ml-32">
+                  {timelineData.map((item, index) => (
+                    <TimelineItem key={item.date} item={item} index={index} />
+                  ))}
+                </div>
               </div>
+            </section>
 
-              {/* Timeline Items */}
-              <div className="space-y-16">
-                {timelineData.map((item, index) => (
-                  <TimelineItem key={item.year + item.title} item={item} index={index} />
+            {/* Education Section */}
+            <section className="mb-24">
+              <h2 className="text-4xl font-gaming text-center mb-16">
+                <span className="text-game-blue">Education</span>
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto px-4">
+                {educationData.map((edu, index) => (
+                  <EducationCard key={edu.degree} edu={edu} index={index} />
                 ))}
               </div>
-            </div>
+            </section>
 
-            {/* Achievements Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="mt-32 text-center"
-            >
-              <h2 className="text-4xl sm:text-5xl font-gaming mb-16">
-                <span className="text-game-gold">Achievements</span> Unlocked
+            {/* Certifications Section */}
+            <section className="mb-24">
+              <h2 className="text-4xl font-gaming text-center mb-16">
+                <span className="text-game-gold">Certifications</span>
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
                 {certifications.map((cert, index) => (
                   <CertificationCard key={cert.title} cert={cert} index={index} />
                 ))}
               </div>
-            </motion.div>
+            </section>
 
             {/* CTA Section */}
             <motion.div
