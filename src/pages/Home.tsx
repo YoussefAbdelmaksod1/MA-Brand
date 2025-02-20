@@ -18,6 +18,7 @@ import {
   shakeAnimation
 } from '../hooks/useAnimations';
 import { useNavigate } from 'react-router-dom';
+import { FaStar, FaChartLine, FaTrophy, FaHeartbeat } from 'react-icons/fa';
 
 const StatCounter = ({ value, label, icon }: { value: number; label: string; icon: string }) => {
   const [count, setCount] = useState(0);
@@ -410,6 +411,151 @@ const Home = () => {
                   </div>
                 </div>
               </motion.div>
+            </div>
+          </motion.section>
+
+          {/* Video Section - Repositioned and Improved */}
+          <motion.section
+            variants={fadeInUp}
+            className="py-16 sm:py-24 relative"
+          >
+            <div className="absolute inset-0">
+              <div className="absolute inset-0 bg-gradient-to-r from-game-blue/10 via-transparent to-game-red/10" />
+              <motion.div
+                className="absolute inset-0"
+                animate={{
+                  background: [
+                    'radial-gradient(circle at 20% 20%, rgba(0,163,255,0.15) 0%, transparent 40%)',
+                    'radial-gradient(circle at 80% 80%, rgba(255,0,0,0.15) 0%, transparent 40%)',
+                    'radial-gradient(circle at 20% 20%, rgba(0,163,255,0.15) 0%, transparent 40%)'
+                  ]
+                }}
+                transition={{ duration: 8, repeat: Infinity }}
+              />
+            </div>
+
+            <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+              {/* Section Title */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="text-center mb-12"
+              >
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-gaming mb-4 relative inline-block">
+                  <span className="text-game-blue">Experience</span> The{' '}
+                  <span className="text-game-red">Journey</span>
+                  <motion.div
+                    className="absolute -top-4 -right-4 text-2xl text-game-gold opacity-75"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  >
+                    <FaStar />
+                  </motion.div>
+                </h2>
+                <p className="text-base sm:text-lg text-game-white/90 max-w-2xl mx-auto">
+                  Discover how our gamified fitness system transforms your workout experience
+                  into an epic adventure of personal growth and achievement.
+                </p>
+              </motion.div>
+
+              <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
+                {/* Video Container */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                  className="relative"
+                >
+                  <div className="relative rounded-xl overflow-hidden shadow-[0_0_30px_rgba(0,163,255,0.2)]">
+                    {/* Gradient Border */}
+                    <div className="absolute inset-0 p-[2px] rounded-xl bg-gradient-to-r from-game-blue via-white to-game-red">
+                      <div className="absolute inset-0 rounded-xl bg-black" />
+                    </div>
+                    
+                    {/* Video Player */}
+                    <div className="relative">
+                      <video
+                        className="w-full rounded-xl aspect-video"
+                        controls
+                        playsInline
+                        poster="/4.gif"
+                        controlsList="nodownload"
+                        onContextMenu={(e) => e.preventDefault()}
+                        disablePictureInPicture
+                        disableRemotePlayback
+                      >
+                        <source src="/video.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                      
+                      {/* Overlay Glow Effect */}
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-game-blue/10 to-game-red/10 pointer-events-none"
+                        animate={{
+                          opacity: [0.2, 0.3, 0.2],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          repeatType: "reverse"
+                        }}
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Features Grid */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                  className="space-y-6"
+                >
+                  {[
+                    {
+                      icon: <FaChartLine className="text-game-blue" />,
+                      title: "Smart Progress Tracking",
+                      description: "Advanced analytics to monitor your fitness journey in real-time"
+                    },
+                    {
+                      icon: <FaTrophy className="text-game-gold" />,
+                      title: "Achievement System",
+                      description: "Earn rewards and unlock special perks as you reach new milestones"
+                    },
+                    {
+                      icon: <FaHeartbeat className="text-game-red" />,
+                      title: "Personalized Coaching",
+                      description: "Get expert guidance tailored to your unique fitness goals"
+                    }
+                  ].map((feature, index) => (
+                    <motion.div
+                      key={feature.title}
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="bg-black/30 backdrop-blur-sm border border-white/10 rounded-lg p-4 sm:p-6
+                        hover:border-game-blue/50 transition-all duration-300 group flex items-start gap-4"
+                    >
+                      <motion.div
+                        className="text-2xl sm:text-3xl flex-shrink-0"
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        {feature.icon}
+                      </motion.div>
+                      <div className="flex-1">
+                        <h3 className="text-lg sm:text-xl font-gaming mb-2">{feature.title}</h3>
+                        <p className="text-sm text-game-white/70">{feature.description}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </div>
             </div>
           </motion.section>
 

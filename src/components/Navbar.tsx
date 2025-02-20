@@ -43,7 +43,7 @@ const Navbar = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 sm:h-24">
+        <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
           <Link 
             to="/" 
@@ -53,7 +53,7 @@ const Navbar = () => {
             <motion.img 
               src="/4.gif" 
               alt="Coach Moumen" 
-              className="h-20 w-auto sm:h-24 md:h-28"
+              className="h-16 w-auto sm:h-20"
               loading="eager"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -107,81 +107,54 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <motion.button 
-            className="md:hidden fixed top-6 right-6 z-50 p-4 rounded-lg bg-black
-              border-2 border-game-white hover:border-game-blue transition-all duration-300
-              shadow-[0_0_20px_rgba(0,163,255,0.3)]"
+          <button 
+            className="md:hidden fixed top-4 right-4 z-50 w-10 h-10 flex items-center justify-center
+              rounded-lg bg-black border border-game-white/30 hover:border-game-blue 
+              transition-all duration-300"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
           >
-            <div className="w-8 h-8 flex flex-col justify-center items-center gap-2">
-              <motion.span
-                className="w-8 h-0.5 bg-white transform-gpu origin-center"
-                variants={{
-                  open: { rotate: 45, y: 3 },
-                  closed: { rotate: 0, y: 0 }
-                }}
-                animate={isMobileMenuOpen ? "open" : "closed"}
-                transition={{ duration: 0.3 }}
-              />
-              <motion.span
-                className="w-8 h-0.5 bg-white transform-gpu origin-center"
-                variants={{
-                  open: { opacity: 0 },
-                  closed: { opacity: 1 }
-                }}
-                animate={isMobileMenuOpen ? "open" : "closed"}
-                transition={{ duration: 0.3 }}
-              />
-              <motion.span
-                className="w-8 h-0.5 bg-white transform-gpu origin-center"
-                variants={{
-                  open: { rotate: -45, y: -3 },
-                  closed: { rotate: 0, y: 0 }
-                }}
-                animate={isMobileMenuOpen ? "open" : "closed"}
-                transition={{ duration: 0.3 }}
-              />
+            <div className="w-5 h-3.5 flex flex-col justify-between">
+              <span className={`w-full h-0.5 bg-white transform transition-all duration-300 origin-center
+                ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`} />
+              <span className={`w-full h-0.5 bg-white transition-all duration-300 
+                ${isMobileMenuOpen ? 'opacity-0 scale-0' : ''}`} />
+              <span className={`w-full h-0.5 bg-white transform transition-all duration-300 origin-center
+                ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`} />
             </div>
-          </motion.button>
+          </button>
 
           {/* Mobile Menu */}
           <AnimatePresence>
             {isMobileMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, x: "100%" }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: "100%" }}
-                transition={{ type: "tween", duration: 0.3 }}
-                className="fixed inset-0 bg-black z-50 md:hidden"
-                style={{ paddingTop: "8rem" }}
-              >
-                <div className="flex flex-col items-center justify-start min-h-[calc(100vh-8rem)] gap-8 p-8">
-                  {navLinks.map(({ path, label }, index) => (
-                    <motion.div
-                      key={path}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 20 }}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
-                      className="w-full max-w-sm"
-                    >
+              <div className="fixed inset-0 z-40 md:hidden bg-black">
+                {/* Menu Content */}
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="h-screen flex flex-col items-center justify-center p-4"
+                >
+                  <div className="w-full max-w-[280px] flex flex-col gap-3">
+                    {navLinks.map(({ path, label }, index) => (
                       <Link
+                        key={path}
                         to={path}
-                        className={`relative px-8 py-6 font-gaming text-2xl tracking-wider block w-full text-center
-                          rounded-lg transition-all duration-300
-                          ${location.pathname === path 
-                            ? 'text-game-white bg-game-blue/20 border-2 border-game-blue shadow-[0_0_20px_rgba(0,163,255,0.5)]' 
-                            : 'text-game-white hover:bg-game-blue/10 border-2 border-transparent hover:border-game-blue/50'}`}
                         onClick={() => setIsMobileMenuOpen(false)}
+                        className={`px-4 py-3 rounded-lg font-gaming text-base text-center bg-black
+                          ${location.pathname === path 
+                            ? 'border-2 border-white/20' 
+                            : 'border border-white/10'}
+                          hover:border-white/30 transition-all duration-300`}
                       >
-                        {label}
+                        <span className={`text-white ${location.pathname === path ? 'opacity-100' : 'opacity-80'} 
+                          hover:opacity-100 transition-opacity duration-300`}>
+                          {label}
+                        </span>
                       </Link>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
             )}
           </AnimatePresence>
         </div>

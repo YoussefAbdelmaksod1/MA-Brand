@@ -42,6 +42,13 @@ const timelineData: TimelineItem[] = [
     highlight: true
   },
   {
+    date: 'June 2024',
+    title: 'Fitness Manager',
+    description: 'Managing fitness operations and client success at Doctor and Coach.',
+    type: 'management',
+    icon: <FaUserTie size={24} className="text-purple-500" />,
+  },
+  {
     date: 'January 2024',
     title: 'Fitness Management',
     description: 'Advanced to Fitness Manager at Dr and Coach, expanding into Personal Training roles at N13 and Elegant Gyms.',
@@ -60,7 +67,8 @@ const timelineData: TimelineItem[] = [
     title: 'Well and Fit Founder',
     description: 'Established Well and Fit while serving as Vice Head of Education Committee.',
     type: 'career',
-    icon: <FaUserTie size={24} className="text-game-blue" />
+    icon: <FaUserTie size={24} className="text-game-red" />,
+    highlight: true
   },
   {
     date: 'March 2022',
@@ -146,85 +154,77 @@ const TimelineItem = ({ item, index }: { item: TimelineItem; index: number }) =>
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-      animate={isInView ? { opacity: 1, x: 0 } : {}}
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8, delay: index * 0.1 }}
-      className="relative mb-16 last:mb-0 pl-8 sm:pl-32"
+      className="relative flex items-center gap-4 mb-12 last:mb-0 md:gap-8"
     >
-      {/* Date Badge */}
-      <motion.div
-        className={`absolute left-0 sm:left-0 top-0 flex items-center gap-2 px-4 py-2 rounded-lg
-          ${item.type === 'education' ? 'text-game-blue' : 
-            item.type === 'management' ? 'text-purple-500' : 
-            'text-game-red'}`}
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5, delay: index * 0.3 }}
-        whileHover={{ scale: 1.1 }}
-      >
-        <div className="flex flex-col items-center">
-          <span className="text-xl sm:text-2xl font-gaming tracking-wider">{monthAbbr}</span>
-          <span className="text-sm font-gaming opacity-80">{year}</span>
-        </div>
-      </motion.div>
+      {/* Left side - Date and Icon */}
+      <div className="flex flex-col items-center min-w-[120px] md:min-w-[160px]">
+        {/* Date Badge */}
+        <motion.div
+          className={`px-4 py-2 rounded-xl text-sm font-gaming mb-4 w-full text-center bg-black border-2
+            ${item.type === 'education' ? 'border-game-blue text-game-blue' : 
+              item.type === 'management' ? 'border-purple-500 text-purple-500' : 
+              'border-game-red text-game-red'}`}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: index * 0.3 }}
+        >
+          <div className="text-lg font-bold">{monthAbbr}</div>
+          <div className="text-sm opacity-90">{year}</div>
+        </motion.div>
 
-      {/* Content Card */}
-      <Card
-        glowing
-        interactive
-        size="sm"
-        className={`transform transition-all duration-300 hover:scale-105
-          ${item.type === 'education' ? 'border-game-blue' : 
-            item.type === 'career' ? 'border-game-red' : 
-            item.type === 'management' ? 'border-purple-500' : 'border-yellow-400'}`}
-      >
-        <div className="flex items-start gap-4 p-4">
-          <motion.div
-            className="relative"
-            whileHover={{ scale: 1.1, rotate: 360 }}
+        {/* Icon Circle */}
+        <motion.div
+          className={`relative z-20 w-12 h-12 rounded-full border-2 flex items-center justify-center bg-black
+            ${item.type === 'education' ? 'border-game-blue' : 
+              item.type === 'management' ? 'border-purple-500' : 
+              'border-game-red'}
+            ${item.highlight ? 'shadow-[0_0_15px_rgba(255,0,0,0.3)]' : ''}`}
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.5, delay: index * 0.2 }}
+          whileHover={{ scale: 1.1 }}
+        >
+          <motion.div 
+            className={`text-xl
+              ${item.type === 'education' ? 'text-game-blue' : 
+                item.type === 'management' ? 'text-purple-500' : 
+                'text-game-red'}`}
+            whileHover={{ rotate: 360 }}
             transition={{ duration: 0.3 }}
           >
-            <div className={`absolute inset-0 opacity-20 blur-lg rounded-full
-              ${item.type === 'education' ? 'bg-game-blue' : 
-                item.type === 'career' ? 'bg-game-red' : 
-                item.type === 'management' ? 'bg-purple-500' : 'bg-yellow-400'}`} 
-            />
-            <div className="relative">
-              {item.icon}
-            </div>
+            {item.icon}
           </motion.div>
-          <div>
-            <h3 className="text-lg sm:text-xl font-gaming text-game-white mb-2">{item.title}</h3>
+        </motion.div>
+      </div>
+
+      {/* Vertical Line */}
+      <div className="absolute left-[120px] md:left-[160px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-game-white/10 to-transparent" />
+
+      {/* Right side - Content */}
+      <div className="flex-1">
+        <Card
+          glowing
+          interactive
+          size="sm"
+          className={`transform transition-all duration-300 hover:scale-[1.02] bg-black
+            ${item.highlight ? 'border-2 shadow-[0_0_20px_rgba(255,0,0,0.2)]' : 'border'}
+            ${item.type === 'education' ? 'border-game-blue/50 hover:border-game-blue' : 
+              item.type === 'career' ? 'border-game-red/50 hover:border-game-red' : 
+              'border-purple-500/50 hover:border-purple-500'}`}
+        >
+          <div className="p-4">
+            <h3 className={`text-lg font-gaming mb-2 
+              ${item.type === 'education' ? 'text-game-blue' : 
+                item.type === 'management' ? 'text-purple-500' : 
+                'text-game-red'}`}>
+              {item.title}
+            </h3>
             <p className="text-sm text-game-white/80">{item.description}</p>
           </div>
-        </div>
-      </Card>
-
-      {/* Timeline Line */}
-      <div className="absolute left-4 sm:left-4 top-0 bottom-0 w-[2px] bg-gradient-to-b from-game-blue via-game-red to-game-blue">
-        <motion.div 
-          className={`absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full
-            ${item.type === 'education' ? 'bg-game-blue' : 
-              item.type === 'career' ? 'bg-game-red' : 
-              item.type === 'management' ? 'bg-purple-500' : 'bg-yellow-400'}`}
-          style={{
-            boxShadow: `0 0 10px ${
-              item.type === 'education' ? 'rgba(0,163,255,0.7)' : 
-              item.type === 'career' ? 'rgba(255,0,0,0.7)' : 
-              item.type === 'management' ? 'rgba(168,85,247,0.7)' : 
-              'rgba(234,179,8,0.7)'
-            }`
-          }}
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.5, 1, 0.5]
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
+        </Card>
       </div>
     </motion.div>
   );
@@ -246,7 +246,7 @@ const CertificationCard = ({ cert, index }: { cert: Certification; index: number
         interactive
         size="sm"
         className="h-full transform hover:-translate-y-2 transition-all duration-300
-          backdrop-blur-lg bg-black/40 border-opacity-50 hover:border-opacity-100"
+          backdrop-blur-lg bg-black border-opacity-50 hover:border-opacity-100"
       >
         <div className="flex flex-col items-center p-6 relative overflow-hidden">
           <div className="absolute inset-0 opacity-20 pointer-events-none">
@@ -299,7 +299,7 @@ const EducationCard = ({ edu, index }: { edu: Education; index: number }) => {
         interactive
         size="sm"
         className="h-full transform hover:-translate-y-2 transition-all duration-300
-          backdrop-blur-lg bg-black/40 border-game-blue border-opacity-50 hover:border-opacity-100"
+          backdrop-blur-lg bg-black border-game-blue border-opacity-50 hover:border-opacity-100"
       >
         <div className="flex flex-col items-center p-6 relative overflow-hidden">
           <div className="absolute inset-0 opacity-20 pointer-events-none">
@@ -410,10 +410,13 @@ const About = () => {
                 My <span className="text-game-blue">Journey</span>
               </h2>
               <div className="relative max-w-5xl mx-auto px-4">
-                <div className="ml-4 sm:ml-32">
-                  {timelineData.map((item, index) => (
-                    <TimelineItem key={item.date} item={item} index={index} />
-                  ))}
+                <div className="relative">
+                  {/* Main Timeline Container */}
+                  <div className="relative">
+                    {timelineData.map((item, index) => (
+                      <TimelineItem key={item.date} item={item} index={index} />
+                    ))}
+                  </div>
                 </div>
               </div>
             </section>

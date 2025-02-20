@@ -4,7 +4,7 @@ import PageTransition from '@/components/PageTransition';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
 import FitnessScene from '@/components/FitnessScene';
-import { FaLock, FaClock, FaFacebook } from 'react-icons/fa';
+import { FaLock, FaClock, FaFacebook, FaGamepad, FaTrophy, FaFire, FaMedal } from 'react-icons/fa';
 
 interface Mission {
   id: string;
@@ -216,12 +216,6 @@ const MissionCard = ({ mission }: { mission: Mission }) => {
 };
 
 const Training = () => {
-  const [selectedType, setSelectedType] = useState<string>('all');
-
-  const filteredMissions = selectedType === 'all'
-    ? missions
-    : missions.filter(mission => mission.type === selectedType);
-
   return (
     <PageTransition>
       <div className="relative min-h-screen bg-game-black">
@@ -231,144 +225,221 @@ const Training = () => {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 h-screen flex items-center justify-center px-4">
-          <div className="text-center max-w-4xl mx-auto">
-            {/* Lock Icon */}
+        <div className="relative z-10 min-h-screen flex flex-col justify-center px-4 py-20 sm:py-32">
+          <div className="max-w-7xl mx-auto w-full">
+            {/* Logo and Title Section */}
             <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{
-                type: "spring",
-                stiffness: 260,
-                damping: 20,
-                delay: 0.3
-              }}
-              className="mb-8"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-12 sm:mb-16"
             >
+              {/* Logo */}
               <motion.div
-                animate={{
-                  boxShadow: [
-                    "0 0 20px rgba(0,163,255,0.3)",
-                    "0 0 40px rgba(0,163,255,0.5)",
-                    "0 0 20px rgba(0,163,255,0.3)"
-                  ]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "reverse"
-                }}
-                className="w-24 h-24 mx-auto bg-black/50 rounded-full flex items-center justify-center backdrop-blur-lg border border-game-blue/30"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="relative mb-8 inline-block"
               >
-                <FaLock className="text-5xl text-game-blue" />
+                <motion.div
+                  animate={{
+                    boxShadow: [
+                      '0 0 30px rgba(0,163,255,0.3)',
+                      '0 0 50px rgba(0,163,255,0.6)',
+                      '0 0 30px rgba(0,163,255,0.3)',
+                    ]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                  className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-game-blue/50"
+                >
+                  <motion.img
+                    src="/4.gif"
+                    alt="Coach Moumen"
+                    className="w-full h-full object-cover"
+                    animate={{
+                      scale: [1, 1.1, 1],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      repeatType: "reverse"
+                    }}
+                  />
+                </motion.div>
               </motion.div>
-            </motion.div>
 
-            {/* Coming Soon Text */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="text-5xl sm:text-7xl font-gaming mb-6 relative inline-block"
-            >
-              <span className="text-game-blue">Missions</span>
-              <motion.span
-                animate={{
-                  opacity: [0.5, 1, 0.5],
-                  scale: [1, 1.02, 1]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "reverse"
-                }}
-                className="absolute -top-6 -right-6 text-2xl text-game-gold"
+              {/* Title */}
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-4xl sm:text-6xl md:text-7xl font-gaming mb-6 relative inline-block"
               >
-                BETA
-              </motion.span>
-            </motion.h1>
+                <span className="text-game-blue">Epic</span>{' '}
+                <span className="text-game-red">Missions</span>
+                <motion.span
+                  animate={{
+                    opacity: [0.5, 1, 0.5],
+                    scale: [1, 1.02, 1]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                  className="absolute -top-4 -right-4 sm:-top-6 sm:-right-6 text-xl sm:text-2xl text-game-gold"
+                >
+                  BETA
+                </motion.span>
+              </motion.h1>
 
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="text-lg sm:text-xl text-game-white/80 max-w-2xl mx-auto mb-8"
+              >
+                Embark on your fitness journey through gamified workouts and challenges
+              </motion.p>
+            </motion.div>
+
+            {/* Mission Categories */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7 }}
-              className="text-xl sm:text-2xl font-gaming text-game-white/80 mb-8"
-            >
-              <span className="text-game-red">Launching Soon</span>
-            </motion.div>
-
-            {/* Timer-like Display */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 }}
-              className="flex items-center justify-center gap-4 mb-12"
-            >
-              <div className="flex items-center gap-2 bg-black/50 px-4 py-2 rounded-lg backdrop-blur-lg border border-game-blue/30">
-                <FaClock className="text-game-blue" />
-                <span className="font-gaming text-game-white/90">Phase 1 Development</span>
-              </div>
-            </motion.div>
-
-            {/* Features Preview */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.1 }}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto mb-12"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12"
             >
               {[
-                'Daily Quests',
-                'Achievement System',
-                'Progress Tracking',
-                'Skill Trees',
-                'Leaderboards',
-                'Special Events'
-              ].map((feature, index) => (
+                {
+                  title: 'Daily Quests',
+                  icon: <FaGamepad className="text-game-blue" />,
+                  description: 'Quick daily workouts',
+                  color: 'border-game-blue'
+                },
+                {
+                  title: 'Boss Battles',
+                  icon: <FaFire className="text-game-red" />,
+                  description: 'Intense challenges',
+                  color: 'border-game-red'
+                },
+                {
+                  title: 'Achievement Hunt',
+                  icon: <FaTrophy className="text-game-gold" />,
+                  description: 'Unlock rewards',
+                  color: 'border-yellow-500'
+                },
+                {
+                  title: 'Skill Tree',
+                  icon: <FaMedal className="text-purple-400" />,
+                  description: 'Progress tracking',
+                  color: 'border-purple-400'
+                }
+              ].map((category, index) => (
                 <motion.div
-                  key={feature}
+                  key={category.title}
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 1.1 + index * 0.1 }}
-                  className="bg-black/30 backdrop-blur-md border border-game-blue/20 rounded-lg px-4 py-3"
+                  transition={{ delay: 0.7 + index * 0.1 }}
+                  whileHover={{ scale: 1.05 }}
+                  className={`bg-black/30 backdrop-blur-md border ${category.color} rounded-xl p-6 
+                    flex flex-col items-center text-center group cursor-pointer
+                    hover:bg-black/50 transition-all duration-300`}
                 >
-                  <span className="text-game-white/70 font-gaming text-sm">
-                    {feature}
-                  </span>
+                  <div className="text-3xl mb-4 transform group-hover:scale-110 transition-transform duration-300">
+                    {category.icon}
+                  </div>
+                  <h3 className="text-lg font-gaming mb-2">{category.title}</h3>
+                  <p className="text-sm text-game-white/60">{category.description}</p>
                 </motion.div>
               ))}
             </motion.div>
 
-            {/* Join Facebook Community CTA */}
+            {/* Coming Soon Banner */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.5 }}
-              className="inline-block"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 }}
+              className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-game-blue/20 to-game-red/20 
+                backdrop-blur-md border border-white/10 p-8 sm:p-12 text-center"
             >
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-[#1877F2] hover:bg-[#0D65D9] text-white font-gaming px-8 py-4 rounded-lg
-                  flex items-center gap-3 transition-colors duration-300 group relative overflow-hidden"
-                onClick={() => window.open('#', '_blank')}
-              >
-                <FaFacebook className="text-2xl" />
-                <span>Join Our Community</span>
+              {/* Animated Background */}
+              <motion.div
+                animate={{
+                  opacity: [0.1, 0.3, 0.1],
+                  scale: [0.95, 1.05, 0.95],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+                className="absolute inset-0 bg-gradient-to-r from-game-blue/10 to-game-red/10 blur-xl"
+              />
+
+              <div className="relative z-10">
                 <motion.div
-                  className="absolute inset-0 bg-white/10"
                   animate={{
-                    x: ["0%", "100%"]
+                    y: [0, -10, 0],
                   }}
                   transition={{
-                    duration: 1,
+                    duration: 2,
                     repeat: Infinity,
-                    repeatType: "mirror",
-                    ease: "linear"
+                    repeatType: "reverse"
                   }}
-                  style={{ clipPath: "polygon(0 0, 20% 0, 60% 100%, 40% 100%)" }}
-                />
-              </motion.button>
+                  className="text-5xl sm:text-6xl mb-6 inline-block"
+                >
+                  🎮
+                </motion.div>
+
+                <h2 className="text-2xl sm:text-3xl font-gaming mb-4">
+                  <span className="text-game-blue">Launching</span>{' '}
+                  <span className="text-game-red">Soon</span>
+                </h2>
+
+                <p className="text-lg text-game-white/80 mb-8 max-w-2xl mx-auto">
+                  Get ready for an epic fitness adventure! Join our community to be the first to access exclusive missions and rewards.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-[#1877F2] hover:bg-[#0D65D9] text-white font-gaming px-8 py-4 rounded-xl
+                      flex items-center gap-3 transition-colors duration-300 group relative overflow-hidden w-full sm:w-auto"
+                    onClick={() => window.open('https://www.facebook.com/groups/coachmoumen', '_blank')}
+                  >
+                    <FaFacebook className="text-2xl" />
+                    <span>Join Community</span>
+                    <motion.div
+                      className="absolute inset-0 bg-white/10"
+                      animate={{
+                        x: ["0%", "100%"]
+                      }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        repeatType: "mirror",
+                        ease: "linear"
+                      }}
+                      style={{ clipPath: "polygon(0 0, 20% 0, 60% 100%, 40% 100%)" }}
+                    />
+                  </motion.button>
+
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    className="flex items-center gap-2 bg-black/50 px-6 py-4 rounded-xl backdrop-blur-lg 
+                      border border-game-blue/30 w-full sm:w-auto justify-center"
+                  >
+                    <FaClock className="text-game-blue" />
+                    <span className="font-gaming text-game-white/90">Phase 1 Development</span>
+                  </motion.div>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
