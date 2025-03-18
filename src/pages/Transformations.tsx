@@ -531,7 +531,12 @@ const TransformationCard = ({ transformation, index }: { transformation: Transfo
 const Transformations = () => {
   return (
     <PageTransition>
-      <div className="relative min-h-screen bg-game-black">
+      <div className="relative min-h-screen bg-game-black overflow-hidden">
+        {/* Enhanced Background Effects */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,163,255,0.2)_0%,transparent_70%)] animate-pulse opacity-70" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,0,0,0.2)_0%,transparent_100%)] animate-pulse opacity-50" />
+        <div className="absolute inset-0 bg-[conic-gradient(from_90deg_at_50%_50%,rgba(0,163,255,0.1)_0%,rgba(255,0,0,0.1)_25%,rgba(0,163,255,0.1)_50%,rgba(255,0,0,0.1)_75%,rgba(0,163,255,0.1)_100%)] animate-spin-slow opacity-30" />
+
         {/* Background Scene */}
         <div className="fixed inset-0 pointer-events-none">
           <FitnessScene />
@@ -579,4 +584,4 @@ const Transformations = () => {
   );
 };
 
-export default Transformations; 
+export default Transformations;

@@ -218,11 +218,11 @@ const MissionCard = ({ mission }: { mission: Mission }) => {
 const Training = () => {
   return (
     <PageTransition>
-      <div className="relative min-h-screen bg-game-black">
-        {/* Background Scene with Blur */}
-        <div className="fixed inset-0 pointer-events-none backdrop-blur-xl">
-          <FitnessScene />
-        </div>
+      <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8 bg-black relative overflow-hidden">
+        {/* Enhanced Background Effects */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,163,255,0.2)_0%,transparent_70%)] animate-pulse opacity-70" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,0,0,0.2)_0%,transparent_100%)] animate-pulse opacity-50" />
+        <div className="absolute inset-0 bg-[conic-gradient(from_90deg_at_50%_50%,rgba(0,163,255,0.1)_0%,rgba(255,0,0,0.1)_25%,rgba(0,163,255,0.1)_50%,rgba(255,0,0,0.1)_75%,rgba(0,163,255,0.1)_100%)] animate-spin-slow opacity-30" />
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex flex-col justify-center px-4 py-20 sm:py-32">
@@ -448,4 +448,4 @@ const Training = () => {
   );
 };
 
-export default Training; 
+export default Training;

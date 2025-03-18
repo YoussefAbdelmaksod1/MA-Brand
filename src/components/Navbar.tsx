@@ -31,6 +31,7 @@ const Navbar = () => {
     { path: '/services', label: 'Full Arsenal' },
     { path: '/training', label: 'Missions' },
     { path: '/transformations', label: 'Leaderboard' },
+    { path: '/xp-system', label: 'Level System' },
     { path: '/contact', label: 'Play Now' },
   ];
 
@@ -163,4 +164,4 @@ const Navbar = () => {
   );
 };
 
-export default memo(Navbar); 
+export default memo(Navbar);

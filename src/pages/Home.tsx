@@ -191,7 +191,7 @@ const Home = () => {
                     ]
                   }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => window.open('https://wa.me/201277877499', '_blank')}
+                  onClick={() => navigate('/xp-system')}
                   className="relative group bg-gradient-to-r from-game-red to-game-red/80 
                     text-xl sm:text-2xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg w-full sm:w-auto 
                     min-w-[200px] font-gaming text-white border-2 border-game-red/50 
@@ -675,4 +675,4 @@ const Home = () => {
   );
 };
 
-export default Home; 
+export default Home;

@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { useState, useEffect, lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import LoadingScreen from './components/LoadingScreen';
 import CustomCursor from './components/CustomCursor';
 import FitnessScene from './components/FitnessScene';
@@ -13,6 +14,7 @@ const About = lazy(() => import('./pages/About'));
 const Services = lazy(() => import('./pages/Services'));
 const Training = lazy(() => import('./pages/Training'));
 const Transformations = lazy(() => import('./pages/Transformations'));
+const XPSystem = lazy(() => import('./pages/XPSystem'));
 const Contact = lazy(() => import('./pages/Contact'));
 
 import './styles/globals.css';
@@ -82,8 +84,10 @@ function App() {
                     <Route path="/services" element={<Services />} />
                     <Route path="/training" element={<Training />} />
                     <Route path="/transformations" element={<Transformations />} />
+                    <Route path="/xp-system" element={<XPSystem />} />
                     <Route path="/contact" element={<Contact />} />
                   </Routes>
+                  <Footer />
                 </Suspense>
               </>
             )}
