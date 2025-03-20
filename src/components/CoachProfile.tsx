@@ -120,12 +120,26 @@ const CoachProfile = () => {
   const [activeTab, setActiveTab] = useState<'stats' | 'achievements' | 'moves'>('stats');
   const [hoveredStat, setHoveredStat] = useState<string | null>(null);
   const [rotation, setRotation] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setRotation(prev => (prev + 1) % 360);
     }, 50);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
   }, []);
 
   return (
@@ -146,13 +160,13 @@ const CoachProfile = () => {
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Profile Section - Enhanced Image */}
-        <div className="lg:col-span-1 flex items-center justify-center py-8">
+        <div className="lg:col-span-1 flex items-center justify-center py-4 sm:py-6 lg:py-8">
           <motion.div 
-            className="relative w-[600px] h-[600px] max-w-full max-h-full"
-            whileHover={{ scale: 1.05 }}
+            className="relative w-[min(220px,90vw)] h-[min(220px,90vw)] xs:w-[min(260px,80vw)] xs:h-[min(260px,80vw)] sm:w-[min(320px,70vw)] sm:h-[min(320px,70vw)] md:w-[min(380px,50vw)] md:h-[min(380px,50vw)] lg:w-[420px] lg:h-[420px]"
+            whileHover={{ scale: isMobile ? 1 : 1.05 }}
             transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
           >
-            {/* Hexagonal Frame */}
+            {/* Premium Hexagonal Frame */}
             <div className="absolute inset-0">
               {[...Array(6)].map((_, i) => (
                 <motion.div
@@ -161,30 +175,34 @@ const CoachProfile = () => {
                   style={{
                     transform: `rotate(${60 * i + rotation}deg)`,
                     transformOrigin: 'center',
-                    border: '2px solid rgba(0,163,255,0.5)',
-                    clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
+                    border: '2px solid rgba(0,163,255,0.3)',
+                    clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+                    backdropFilter: 'blur(4px)',
+                    background: 'linear-gradient(45deg, rgba(0,163,255,0.05), transparent)'
                   }}
                 />
               ))}
             </div>
 
-            {/* Energy Particles */}
-            {[...Array(12)].map((_, i) => (
+            {/* Subtle Energy Pulse */}
+            {[...Array(6)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute w-4 h-4 rounded-full bg-gradient-to-r from-game-blue to-game-red"
+                className="absolute w-2 h-2 rounded-full bg-game-blue/30"
                 style={{
-                  left: `${50 + 45 * Math.cos(2 * Math.PI * i / 12)}%`,
-                  top: `${50 + 45 * Math.sin(2 * Math.PI * i / 12)}%`
+                  left: `${50 + 48 * Math.cos(2 * Math.PI * i / 6)}%`,
+                  top: `${50 + 48 * Math.sin(2 * Math.PI * i / 6)}%`,
+                  boxShadow: '0 0 10px rgba(0,163,255,0.3)'
                 }}
                 animate={{
-                  scale: [1, 1.5, 1],
-                  opacity: [0.7, 1, 0.7]
+                  scale: [1, 1.2, 1],
+                  opacity: [0.3, 0.6, 0.3]
                 }}
                 transition={{
-                  duration: 2,
+                  duration: 3,
                   repeat: Infinity,
-                  delay: i * 0.2
+                  delay: i * 0.5,
+                  ease: "easeInOut"
                 }}
               />
             ))}
@@ -193,8 +211,9 @@ const CoachProfile = () => {
             <motion.div
               className="absolute -inset-4 rounded-xl"
               style={{
-                background: 'conic-gradient(from 0deg, rgba(0,163,255,0.7), rgba(255,0,0,0.7), rgba(0,163,255,0.7))',
-                filter: 'blur(8px)'
+                background: 'conic-gradient(from 0deg, rgba(0,163,255,0.3), rgba(0,163,255,0.1), rgba(0,163,255,0.3))',
+                filter: 'blur(8px)',
+                opacity: 0.8
               }}
               animate={{ rotate: 360 }}
               transition={{
@@ -203,10 +222,18 @@ const CoachProfile = () => {
                 ease: "linear"
               }}
             />
+            <motion.div
+              className="absolute -inset-4 rounded-xl"
+              style={{
+                background: 'linear-gradient(45deg, rgba(0,163,255,0.2), transparent)',
+                backdropFilter: 'blur(2px)',
+                border: '1px solid rgba(0,163,255,0.1)'
+              }}
+            />
 
             {/* Profile Image */}
             <motion.div
-              className="absolute inset-8 rounded-xl overflow-hidden bg-game-black/50 backdrop-blur-sm"
+              className="absolute inset-[8%] xs:inset-[10%] sm:inset-[12%] md:inset-[15%] rounded-xl overflow-hidden bg-game-black/50 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
@@ -214,117 +241,142 @@ const CoachProfile = () => {
               <img
                 src="/profile.jpg"
                 alt="Coach Profile"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-center"
+                loading="eager"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-game-black/80 to-transparent" />
             </motion.div>
             {/* Hexagonal Frame */}
             <div className="absolute inset-0">
-              {[...Array(6)].map((_, i) => (
+              {[...Array(isMobile ? 3 : 6)].map((_, i) => (
                 <motion.div
                   key={i}
                   className="absolute w-full h-full"
                   style={{
-                    transform: `rotate(${60 * i + rotation}deg)`,
+                    transform: `rotate(${isMobile ? 120 * i : 60 * i}${isMobile ? '' : ` + ${rotation}`}deg)`,
                     transformOrigin: 'center',
-                    border: '2px solid rgba(0,163,255,0.5)',
+                    border: `${isMobile ? '1px' : '2px'} solid rgba(0,163,255,${isMobile ? '0.4' : '0.5'})`,
                     clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
                   }}
                 />
               ))}
             </div>
 
-            {/* Energy Particles */}
-            {[...Array(12)].map((_, i) => (
+            {/* Energy Particles - Reduced for mobile */}
+            {[...Array(isMobile ? 3 : 8)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute w-4 h-4 rounded-full bg-gradient-to-r from-game-blue to-game-red"
+                className="absolute w-1.5 h-1.5 xs:w-2 xs:h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full bg-gradient-to-r from-game-blue to-game-red"
                 style={{
-                  left: `${50 + 45 * Math.cos(2 * Math.PI * i / 12)}%`,
-                  top: `${50 + 45 * Math.sin(2 * Math.PI * i / 12)}%`,
+                  left: `${50 + 45 * Math.cos(2 * Math.PI * i / (isMobile ? 3 : 8))}%`,
+                  top: `${50 + 45 * Math.sin(2 * Math.PI * i / (isMobile ? 3 : 8))}%`,
                 }}
                 animate={{
-                  scale: [1, 1.5, 1],
-                  opacity: [0.7, 1, 0.7],
+                  scale: [1, 1.2, 1],
+                  opacity: [0.5, 0.8, 0.5],
                 }}
                 transition={{
-                  duration: 2,
+                  duration: isMobile ? 5 : 3,
                   repeat: Infinity,
-                  delay: i * 0.2,
+                  delay: i * (isMobile ? 0.7 : 0.3),
                 }}
               />
             ))}
 
-            {/* Rotating Border */}
+            {/* Rotating Border - Optimized for mobile */}
             <motion.div
-              className="absolute -inset-4 rounded-xl"
+              className="absolute -inset-2 sm:-inset-3 md:-inset-4 rounded-xl"
               style={{
-                background: 'conic-gradient(from 0deg, rgba(0,163,255,0.7), rgba(255,0,0,0.7), rgba(0,163,255,0.7))',
-                filter: 'blur(8px)',
+                background: 'conic-gradient(from 0deg, rgba(0,163,255,0.5), rgba(255,0,0,0.5), rgba(0,163,255,0.5))',
+                filter: isMobile ? 'blur(3px)' : 'blur(6px)',
+                opacity: isMobile ? 0.7 : 0.9
               }}
               animate={{ rotate: 360 }}
               transition={{
-                duration: 8,
+                duration: isMobile ? 15 : 10,
                 repeat: Infinity,
                 ease: "linear"
               }}
             />
 
-            {/* Pulsing Glow Effect */}
-            <motion.div
-              className="absolute -inset-6"
-              animate={{
-                boxShadow: [
-                  '0 0 40px rgba(0,163,255,0.8), inset 0 0 40px rgba(0,163,255,0.8)',
-                  '0 0 80px rgba(255,0,0,0.8), inset 0 0 80px rgba(255,0,0,0.8)',
-                  '0 0 40px rgba(0,163,255,0.8), inset 0 0 40px rgba(0,163,255,0.8)'
-                ]
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-
-            {/* Image Container */}
-            <div className="absolute inset-4 overflow-hidden rounded-xl border-4 border-game-white/30 bg-gradient-to-br from-game-blue/20 to-game-red/20">
-              <img
-                src="/profile.jpg"
-                alt="Coach Moumen"
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            {/* Power Level Indicator */}
-            <motion.div
-              className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 bg-game-black/90 px-6 py-3 rounded-full border-2 border-game-blue/50"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              whileHover={{ scale: 1.1 }}
-            >
-              <div className="text-game-blue font-gaming text-xl">Captain MA</div>
-            </motion.div>
-
-            {/* Corner Decorations */}
-            {[...Array(4)].map((_, i) => (
+            {/* Pulsing Glow Effect - Optimized for mobile */}
+            {!isMobile && (
               <motion.div
-                key={i}
-                className="absolute w-8 h-8"
-                style={{
-                  top: i < 2 ? '-1rem' : 'auto',
-                  bottom: i >= 2 ? '-1rem' : 'auto',
-                  left: i % 2 === 0 ? '-1rem' : 'auto',
-                  right: i % 2 === 1 ? '-1rem' : 'auto',
-                  background: 'linear-gradient(45deg, var(--game-blue), var(--game-red))',
-                  clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)'
-                }}
+                className="absolute -inset-4 xs:-inset-5 sm:-inset-6"
                 animate={{
-                  rotate: [0, 180, 360],
-                  scale: [1, 1.2, 1]
+                  boxShadow: [
+                    '0 0 30px rgba(0,163,255,0.6), inset 0 0 30px rgba(0,163,255,0.6)',
+                    '0 0 60px rgba(255,0,0,0.6), inset 0 0 60px rgba(255,0,0,0.6)',
+                    '0 0 30px rgba(0,163,255,0.6), inset 0 0 30px rgba(0,163,255,0.6)'
+                  ]
                 }}
                 transition={{
                   duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+            )}
+            {isMobile && (
+              <motion.div
+                className="absolute -inset-2 xs:-inset-3"
+                animate={{
+                  boxShadow: [
+                    '0 0 10px rgba(0,163,255,0.4), inset 0 0 10px rgba(0,163,255,0.4)',
+                    '0 0 20px rgba(255,0,0,0.4), inset 0 0 20px rgba(255,0,0,0.4)',
+                    '0 0 10px rgba(0,163,255,0.4), inset 0 0 10px rgba(0,163,255,0.4)'
+                  ]
+                }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+            )}
+
+            {/* Image Container - Optimized for mobile */}
+            <div className="absolute inset-3 xs:inset-4 overflow-hidden rounded-xl border-2 xs:border-3 sm:border-4 border-game-white/30 bg-gradient-to-br from-game-blue/20 to-game-red/20">
+              <img
+                src="/profile.jpg"
+                alt="Coach Moumen"
+                className="w-full h-full object-cover object-center"
+                loading="eager"
+              />
+            </div>
+
+            {/* MA Coach Badge - Responsive positioning */}
+            <motion.div
+              className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 bg-game-black/90 px-3 sm:px-4 py-1 sm:py-2 rounded-lg border-2 border-game-blue/50 shadow-lg z-20"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              whileHover={{ scale: isMobile ? 1 : 1.1, boxShadow: '0 0 20px rgba(0,163,255,0.5)' }}
+            >
+              <div className="text-game-blue font-gaming text-sm sm:text-lg flex items-center gap-1 sm:gap-2">
+                <span className="text-lg sm:text-xl">👑</span>
+                <span>MA Coach</span>
+              </div>
+            </motion.div>
+
+            {/* Corner Decorations - Responsive sizing */}
+            {[...Array(4)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 md:w-8 md:h-8"
+                style={{
+                  top: i < 2 ? '-0.5rem' : 'auto',
+                  bottom: i >= 2 ? '-0.5rem' : 'auto',
+                  left: i % 2 === 0 ? '-0.5rem' : 'auto',
+                  right: i % 2 === 1 ? '-0.5rem' : 'auto',
+                  background: 'linear-gradient(45deg, var(--color-blue), var(--color-red))',
+                  clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)'
+                }}
+                animate={{
+                  rotate: isMobile ? [0, 360] : [0, 180, 360],
+                  scale: isMobile ? [1, 1.05, 1] : [1, 1.2, 1]
+                }}
+                transition={{
+                  duration: isMobile ? 6 : 4,
                   repeat: Infinity,
                   delay: i * 0.5
                 }}

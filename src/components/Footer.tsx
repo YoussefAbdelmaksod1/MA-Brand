@@ -23,14 +23,7 @@ const Footer = () => {
             whileHover={{ scale: 1.05 }}
           >
             <span className="text-game-white/60">Powered by</span>
-            <a 
-              href="https://devnium.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-game-blue hover:text-game-red transition-colors duration-300"
-            >
-              Devnium
-            </a>
+            <span className="text-game-blue">Devnium</span>
           </motion.div>
         </div>
       </div>

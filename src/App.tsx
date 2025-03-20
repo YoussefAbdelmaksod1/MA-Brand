@@ -78,15 +78,17 @@ function App() {
                     </motion.div>
                   </div>
                 }>
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/services" element={<Services />} />
-                    <Route path="/training" element={<Training />} />
-                    <Route path="/transformations" element={<Transformations />} />
-                    <Route path="/xp-system" element={<XPSystem />} />
-                    <Route path="/contact" element={<Contact />} />
-                  </Routes>
+                  <AnimatePresence mode="wait">
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/about" element={<About />} />
+                      <Route path="/services" element={<Services />} />
+                      <Route path="/training" element={<Training />} />
+                      <Route path="/transformations" element={<Transformations />} />
+                      <Route path="/xp-system" element={<XPSystem />} />
+                      <Route path="/contact" element={<Contact />} />
+                    </Routes>
+                  </AnimatePresence>
                   <Footer />
                 </Suspense>
               </>

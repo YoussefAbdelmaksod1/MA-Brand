@@ -640,35 +640,13 @@ const Home = () => {
                   className="px-6 py-3 rounded-xl bg-gradient-to-r from-game-blue/20 to-game-red/20 border-2 border-white/20"
                   whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(255,255,255,0.2)' }}
                 >
-                  <span className="text-white font-gaming">Level 99</span>
+                  <span className="text-white font-gaming">Level 100</span>
                 </motion.div>
               </div>
             </motion.div>
           </motion.section>
 
-          {/* Features Section */}
-          <motion.section
-            variants={staggerContainer}
-            className="py-16 sm:py-24"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-              <FeatureCard
-                title="Personalized Training"
-                description="Custom workout routines tailored to your goals and gaming schedule. Level up your fitness journey with expert guidance."
-                icon="🎮"
-              />
-              <FeatureCard
-                title="Nutrition Mastery"
-                description="Level up your diet with gaming-inspired meal plans. Unlock new recipes and power-ups for optimal performance."
-                icon="🥗"
-              />
-              <FeatureCard
-                title="Community Quests"
-                description="Join fellow gamers in epic fitness challenges. Compete, achieve, and earn rewards together."
-                icon="⚔️"
-              />
-            </div>
-          </motion.section>
+
         </motion.div>
       </div>
     </div>

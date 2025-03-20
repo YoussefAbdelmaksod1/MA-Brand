@@ -11,27 +11,72 @@ const XPSystem = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [startTouchX, setStartTouchX] = useState(0);
+  const [currentX, setCurrentX] = useState(0);
   const maxXP = 1000;
 
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleDragStart = (clientX: number) => {
     setIsDragging(true);
-    setStartX(e.clientX);
+    setStartX(clientX);
+    setCurrentX(clientX);
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleDragMove = (clientX: number, container: HTMLElement) => {
     if (!isDragging) return;
-    const diff = e.clientX - startX;
-    const newSlide = Math.max(0, Math.min(10, currentSlide + Math.round(diff / 100)));
-    setCurrentSlide(newSlide);
-    setStartX(e.clientX);
+    const rect = container.getBoundingClientRect();
+    const containerWidth = rect.width;
+    const deltaX = clientX - startX;
+    setCurrentX(clientX);
+
+    const slideWidth = containerWidth / levelTiers.length;
+    const slideDelta = Math.round(deltaX / slideWidth);
+    const currentSlideIndex = Math.max(0, Math.min(levelTiers.length - 1, Math.floor((clientX - rect.left) / slideWidth)));
+
+    if (Math.abs(deltaX) > slideWidth * 0.1) {
+      setCurrentSlide(currentSlideIndex);
+    }
   };
 
-  const handleMouseUp = () => {
+  const handleDragEnd = () => {
     setIsDragging(false);
   };
 
+  const handleMouseDown = (e: React.MouseEvent) => {
+    handleDragStart(e.clientX);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    handleDragMove(e.clientX, e.currentTarget as HTMLElement);
+  };
+
+  const handleMouseUp = () => {
+    handleDragEnd();
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    handleDragStart(touch.clientX);
+    setStartTouchX(touch.clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    handleDragMove(touch.clientX, e.currentTarget as HTMLElement);
+  };
+
+  const handleTouchEnd = () => {
+    handleDragEnd();
+  };
+
   const handleClick = (level: number) => {
-    setCurrentSlide(level);
+    if (Math.abs(currentX - startX) < 5) {
+      setCurrentSlide(level);
+    }
+  };
+
+  const handleViewArsenal = () => {
+    window.location.href = '/services';
   };
 
   useEffect(() => {
@@ -64,9 +109,8 @@ const XPSystem = () => {
     { level: '60-69', title: 'Victory Master', reward: 'Level-specific MA Hoodie', icon: '🏆' },
     { level: '70-79', title: 'MA Champion', reward: 'Exclusive Design MA T-shirt', icon: '💫' },
     { level: '80-89', title: 'Fitness Beast', reward: 'Champions MA Hoodie', icon: '🔥' },
-    { level: '90-98', title: 'MA Legend Elite', reward: 'Top-tier MA T-shirt', icon: '⭐' },
-    { level: '99', title: 'Supreme Warrior', reward: 'VIP Edition MA Hoodie', icon: '💎' },
-    { level: '100', title: 'Captain MA', reward: 'Exclusive to Captain Moumen (MA)', icon: '👑' },
+    { level: '90-99', title: 'MA Legend Elite', reward: 'Top-tier MA T-shirt', icon: '⭐' },
+    { level: '100', title: 'Supreme Warrior', reward: 'VIP Edition MA Hoodie', icon: '💎' },
   ];
 
   return (
@@ -109,6 +153,14 @@ const XPSystem = () => {
               <div className="mt-4 text-xl text-game-white/80 font-gaming animate-pulse">
                 {currentXP} / {maxXP} XP
               </div>
+              <motion.button
+                onClick={handleViewArsenal}
+                whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(0,163,255,0.5)' }}
+                whileTap={{ scale: 0.95 }}
+                className="mt-6 px-6 py-2 bg-game-blue/20 border-2 border-game-blue rounded-lg font-gaming text-game-blue hover:bg-game-blue/30 transition-colors"
+              >
+                View Full Arsenal
+              </motion.button>
             </div>
           </div>
         </motion.div>
@@ -219,20 +271,19 @@ const XPSystem = () => {
                   className="absolute top-1/2 -translate-y-1/2 cursor-pointer"
                   style={{ left: `${level}%` }}
                   initial={{ scale: 0 }}
-                  onClick={() => handleClick(i)}
-                  onMouseDown={handleMouseDown}
-                  onMouseMove={handleMouseMove}
-                  onMouseUp={handleMouseUp}
-                  onMouseLeave={handleMouseUp}
                   animate={{ 
                     scale: currentSlide === i ? 1.5 : 1,
                     boxShadow: currentSlide === i ? '0 0 20px rgba(0,163,255,0.9)' : 'none'
                   }}
                   transition={{ duration: 0.5 }}
                   onClick={() => setCurrentSlide(i)}
-                  onMouseDown={() => setIsDragging(true)}
-                  onMouseUp={() => setIsDragging(false)}
-                  onMouseLeave={() => setIsDragging(false)}
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={handleMouseUp}
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
                 >
                   <div className="w-4 h-4 rounded-full bg-gradient-to-r from-game-blue to-game-red -mt-1 shadow-[0_0_10px_rgba(0,163,255,0.7)]" />
                   <div className="absolute -left-3 -bottom-8 text-xs font-gaming text-game-white/80">{level}</div>
@@ -245,9 +296,29 @@ const XPSystem = () => {
           <div className="relative z-10 overflow-hidden pb-4 mx-auto max-w-[90vw] sm:max-w-none">
             <motion.div 
               className="flex space-x-8 px-4 sm:px-0 py-6"
-              animate={{ x: currentSlide * -320 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              style={{ width: `${levelTiers.length * 320}px` }}
+              animate={{ 
+                x: currentSlide * -320,
+                transition: {
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 30
+                }
+              }}
+              drag="x"
+              dragConstraints={{ left: -((levelTiers.length - 1) * 320), right: 0 }}
+              dragElastic={0.1}
+              onDragEnd={(e, info) => {
+                const slideWidth = 320;
+                const newSlide = Math.min(
+                  Math.max(0, Math.round(Math.abs(info.point.x) / slideWidth)),
+                  levelTiers.length - 1
+                );
+                setCurrentSlide(newSlide);
+              }}
+              style={{ 
+                width: `${levelTiers.length * 320}px`,
+                cursor: isDragging ? "grabbing" : "grab"
+              }}
             >
               {levelTiers.map((tier, index) => (
                 <motion.div
@@ -430,3 +501,95 @@ const XPSystem = () => {
 };
 
 export default XPSystem;
+
+
+const LevelSlider = () => {
+  return (
+    <div
+      id="level-slider"
+      className="relative overflow-hidden touch-none select-none"
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      <div
+        className="flex transition-transform duration-300"
+        style={{
+          transform: `translateX(${-currentSlide * 100}%)`
+        }}
+      >
+        {levelTiers.map((tier, index) => (
+          <div
+            key={tier.level}
+            className="min-w-full p-4"
+            onClick={() => handleClick(index)}
+          >
+            <Card glowing className="p-6 text-center">
+              <div className="text-4xl mb-4">{tier.icon}</div>
+              <h3 className="text-xl font-gaming text-game-blue mb-2">
+                Level {tier.level}
+              </h3>
+              <h4 className="text-lg font-gaming text-game-white mb-2">
+                {tier.title}
+              </h4>
+              <p className="text-game-white/80">{tier.reward}</p>
+            </Card>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const handleDragStart = (clientX: number) => {
+  setIsDragging(true);
+  setStartX(clientX);
+  setDragOffset(0);
+};
+
+const handleDrag = (clientX: number) => {
+  if (!isDragging) return;
+  const offset = clientX - startX;
+  setDragOffset(offset);
+  
+  const container = document.getElementById('level-slider');
+  if (!container) return;
+  
+  const rect = container.getBoundingClientRect();
+  const containerWidth = rect.width;
+  const slideWidth = containerWidth / levelTiers.length;
+  const newSlide = Math.max(0, Math.min(levelTiers.length - 1, Math.floor((clientX - rect.left) / slideWidth)));
+  
+  if (newSlide !== currentSlide) {
+    setCurrentSlide(newSlide);
+  }
+};
+
+const handleDragEnd = () => {
+  setIsDragging(false);
+  setDragOffset(0);
+};
+<div 
+  className="relative overflow-x-auto touch-pan-x cursor-grab active:cursor-grabbing"
+  onMouseDown={(e) => handleDragStart(e.clientX)}
+  onMouseMove={(e) => handleDrag(e.clientX)}
+  onMouseUp={handleDragEnd}
+  onMouseLeave={handleDragEnd}
+  onTouchStart={(e) => handleDragStart(e.touches[0].clientX)}
+  onTouchMove={(e) => handleDrag(e.touches[0].clientX)}
+  onTouchEnd={handleDragEnd}
+>
+  <motion.div
+    className="flex transition-transform"
+    animate={{
+      x: isDragging ? dragOffset : 0,
+      transition: { type: "spring", stiffness: 300, damping: 30 }
+    }}
+  >
+    {/* Level Tiers Content */}
+  </motion.div>
+</div>
