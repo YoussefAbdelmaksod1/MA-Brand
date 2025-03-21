@@ -23,7 +23,9 @@ const Footer = () => {
             whileHover={{ scale: 1.05 }}
           >
             <span className="text-game-white/60">Powered by</span>
-            <span className="text-game-blue">Devnium</span>
+            <span className="text-game-blue">
+              Devnium
+            </span>
           </motion.div>
         </div>
       </div>

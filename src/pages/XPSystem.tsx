@@ -20,21 +20,21 @@ const XPSystem = () => {
     setIsDragging(true);
     setStartX(clientX);
     setCurrentX(clientX);
+    setDragOffset(0);
   };
 
   const handleDragMove = (clientX: number, container: HTMLElement) => {
     if (!isDragging) return;
     const rect = container.getBoundingClientRect();
-    const containerWidth = rect.width;
     const deltaX = clientX - startX;
     setCurrentX(clientX);
+    setDragOffset(deltaX);
 
-    const slideWidth = containerWidth / levelTiers.length;
-    const slideDelta = Math.round(deltaX / slideWidth);
-    const currentSlideIndex = Math.max(0, Math.min(levelTiers.length - 1, Math.floor((clientX - rect.left) / slideWidth)));
+    const slideWidth = rect.width / levelTiers.length;
+    const newSlide = Math.max(0, Math.min(levelTiers.length - 1, Math.round(-deltaX / slideWidth)));
 
     if (Math.abs(deltaX) > slideWidth * 0.1) {
-      setCurrentSlide(currentSlideIndex);
+      setCurrentSlide(newSlide);
     }
   };
 
@@ -109,8 +109,9 @@ const XPSystem = () => {
     { level: '60-69', title: 'Victory Master', reward: 'Level-specific MA Hoodie', icon: '🏆' },
     { level: '70-79', title: 'MA Champion', reward: 'Exclusive Design MA T-shirt', icon: '💫' },
     { level: '80-89', title: 'Fitness Beast', reward: 'Champions MA Hoodie', icon: '🔥' },
-    { level: '90-99', title: 'MA Legend Elite', reward: 'Top-tier MA T-shirt', icon: '⭐' },
-    { level: '100', title: 'Supreme Warrior', reward: 'VIP Edition MA Hoodie', icon: '💎' },
+    { level: '90-98', title: 'MA Legend Elite', reward: 'Top-tier MA T-shirt', icon: '⭐' },
+    { level: '99', title: 'Supreme Warrior', reward: 'VIP Edition MA Hoodie', icon: '💎' },
+    { level: '100', title: 'Captain MA', reward: 'Exclusive to Captain Moumen (MA)', icon: '👑' },
   ];
 
   return (
@@ -501,95 +502,3 @@ const XPSystem = () => {
 };
 
 export default XPSystem;
-
-
-const LevelSlider = () => {
-  return (
-    <div
-      id="level-slider"
-      className="relative overflow-hidden touch-none select-none"
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
-      <div
-        className="flex transition-transform duration-300"
-        style={{
-          transform: `translateX(${-currentSlide * 100}%)`
-        }}
-      >
-        {levelTiers.map((tier, index) => (
-          <div
-            key={tier.level}
-            className="min-w-full p-4"
-            onClick={() => handleClick(index)}
-          >
-            <Card glowing className="p-6 text-center">
-              <div className="text-4xl mb-4">{tier.icon}</div>
-              <h3 className="text-xl font-gaming text-game-blue mb-2">
-                Level {tier.level}
-              </h3>
-              <h4 className="text-lg font-gaming text-game-white mb-2">
-                {tier.title}
-              </h4>
-              <p className="text-game-white/80">{tier.reward}</p>
-            </Card>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const handleDragStart = (clientX: number) => {
-  setIsDragging(true);
-  setStartX(clientX);
-  setDragOffset(0);
-};
-
-const handleDrag = (clientX: number) => {
-  if (!isDragging) return;
-  const offset = clientX - startX;
-  setDragOffset(offset);
-  
-  const container = document.getElementById('level-slider');
-  if (!container) return;
-  
-  const rect = container.getBoundingClientRect();
-  const containerWidth = rect.width;
-  const slideWidth = containerWidth / levelTiers.length;
-  const newSlide = Math.max(0, Math.min(levelTiers.length - 1, Math.floor((clientX - rect.left) / slideWidth)));
-  
-  if (newSlide !== currentSlide) {
-    setCurrentSlide(newSlide);
-  }
-};
-
-const handleDragEnd = () => {
-  setIsDragging(false);
-  setDragOffset(0);
-};
-<div 
-  className="relative overflow-x-auto touch-pan-x cursor-grab active:cursor-grabbing"
-  onMouseDown={(e) => handleDragStart(e.clientX)}
-  onMouseMove={(e) => handleDrag(e.clientX)}
-  onMouseUp={handleDragEnd}
-  onMouseLeave={handleDragEnd}
-  onTouchStart={(e) => handleDragStart(e.touches[0].clientX)}
-  onTouchMove={(e) => handleDrag(e.touches[0].clientX)}
-  onTouchEnd={handleDragEnd}
->
-  <motion.div
-    className="flex transition-transform"
-    animate={{
-      x: isDragging ? dragOffset : 0,
-      transition: { type: "spring", stiffness: 300, damping: 30 }
-    }}
-  >
-    {/* Level Tiers Content */}
-  </motion.div>
-</div>
